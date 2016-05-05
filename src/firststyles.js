@@ -1,8 +1,9 @@
 import React, {
     PixelRatio,
+    Platform,
     StyleSheet,
 } from 'react-native';
-exports.android = StyleSheet.create({
+ exports.android = StyleSheet.create({
     container: {
         borderRadius: 5,
         flexDirection: 'row',
@@ -16,6 +17,10 @@ exports.android = StyleSheet.create({
     },
     itemHor: {
         flex: 1,
+        height: 80,
+    },
+    head: {
+        width: 80,
         height: 80,
     },
     center: {
@@ -52,6 +57,11 @@ exports.ios = StyleSheet.create({
         height: 80,
         padding: 0,
     },
-
 });
+
+/*if (Platform.OS == 'android') {
+    module.exports = android;
+} else {
+    module.exports = ios;
+}*/
 

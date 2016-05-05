@@ -8,10 +8,13 @@ import React, {
     AppRegistry,
     Component,
     Image,
+    ListView,
     Navigator,
     Switch,
     Text,
+    RefreshControl,
     TouchableOpacity,
+    ToolbarAndroid,
     ToastAndroid,
     View,
 } from 'react-native';
@@ -29,8 +32,6 @@ class First extends Component {
             sw: false,
         };
     }
-
-
 
     render() {
         return (
@@ -71,13 +72,13 @@ class Second extends Component {
      * bind this
      * @private
      */
-     _onItemPress(){
+    _onItemPress() {
         ToastAndroid.show('Image pressed!', ToastAndroid.SHORT);
         Alert.alert('标题', 'messages', '.......'.split('').map((dot, index)=>({
             text: '按键' + index,
-            onPress: ()=>{
+            onPress: ()=> {
                 uri = null;
-                switch (index){
+                switch (index) {
                     case 0:
                         uri = 'http://lookcode-wordpress.stor.sinaapp.com/uploads/2016/02/one5.gif';
                         break;
@@ -102,8 +103,101 @@ class Second extends Component {
                     ok! back to X!!!!
                 </Text>
 
-                <TouchableOpacity style={[ss.flex]}
-                                    onPress={this._onItemPress}>
+                <TouchableOpacity style={[ss.flex]} onPress={this._onItemPress}>
+                    <Image
+                        style={[{margin: 10, resizeMode: Image.resizeMode.cover}, ss.flex]}
+                        source={{uri: this.state.imgUri}}
+                    />
+                </TouchableOpacity>
+            </View>
+        )
+    }
+}
+
+class RowItem extends Component {
+    // 构造
+      constructor(props) {
+        super(props);
+        // 初始状态
+        this.state = {
+            headUri: props.item.headUri;
+            text: props.item.headUri;
+        };
+      }
+
+    _onItemPress
+
+    render(){
+        return (
+            <View style={[ss.itemHor, {flexDirection: 'column'}]} >
+                <TouchableOpacity onPress={}
+                <Image style={[ss.head]} resizeMode="cover"/>
+                <Text style={ss.font}>{this.state.text}</Text>
+            </View>
+        )
+    }
+}
+
+class Third extends Component {
+
+    // 构造
+    constructor(props) {
+        super(props);
+        // 初始状态
+        //let list = {['ookcode-word', 'ookcode-word', 'ookcode-word', 'ookcode-word', 'ookcode-word', 'ookcode-word', 'ookcode-word',].map((item, index)}
+        let LIST_IMG = ['https://fbcdn-dragon-a.akamaihd.net/hphotos-ak-ash3/t39.1997/p128x128/851549_767334479959628_274486868_n.png', 'https://fbcdn-dragon-a.akamaihd.net/hphotos-ak-prn1/t39.1997/p128x128/851561_767334496626293_1958532586_n.png', 'https://fbcdn-dragon-a.akamaihd.net/hphotos-ak-ash3/t39.1997/p128x128/851579_767334503292959_179092627_n.png', 'https://fbcdn-dragon-a.akamaihd.net/hphotos-ak-prn1/t39.1997/p128x128/851589_767334513292958_1747022277_n.png', 'https://fbcdn-dragon-a.akamaihd.net/hphotos-ak-prn1/t39.1997/p128x128/851563_767334559959620_1193692107_n.png', 'https://fbcdn-dragon-a.akamaihd.net/hphotos-ak-prn1/t39.1997/p128x128/851593_767334566626286_1953955109_n.png', 'https://fbcdn-dragon-a.akamaihd.net/hphotos-ak-prn1/t39.1997/p128x128/851591_767334523292957_797560749_n.png', 'https://fbcdn-dragon-a.akamaihd.net/hphotos-ak-prn1/t39.1997/p128x128/851567_767334529959623_843148472_n.png', 'https://fbcdn-dragon-a.akamaihd.net/hphotos-ak-prn1/t39.1997/p128x128/851548_767334489959627_794462220_n.png', 'https://fbcdn-dragon-a.akamaihd.net/hphotos-ak-prn1/t39.1997/p128x128/851575_767334539959622_441598241_n.png', 'https://fbcdn-dragon-a.akamaihd.net/hphotos-ak-ash3/t39.1997/p128x128/851573_767334549959621_534583464_n.png', 'https://fbcdn-dragon-a.akamaihd.net/hphotos-ak-prn1/t39.1997/p128x128/851583_767334573292952_1519550680_n.png'];
+        this._onItemPress = this._onItemPress.bind(this);
+        this.state = {
+            ds: null,
+            refreshing: false;
+    }}
+
+    _createRows(uri, i){
+        return
+    }
+
+    componentDidMount() {
+
+    }
+
+    /**
+     * bind this
+     * @private
+     */
+    _onItemPress() {
+        ToastAndroid.show('Image pressed!', ToastAndroid.SHORT);
+        Alert.alert('标题', 'messages', '.......'.split('').map((dot, index)=>({
+            text: '按键' + index,
+            onPress: ()=> {
+                uri = null;
+                switch (index) {
+                    case 0:
+                        uri = 'http://lookcode-wordpress.stor.sinaapp.com/uploads/2016/02/one5.gif';
+                        break;
+                    case 1:
+                        uri = 'http://cc.cocimg.com/api/uploads/20150408/1428465581541704.jpg';
+                        break;
+                    case 2:
+                        uri = 'http://cc.cocimg.com/api/uploads/20150408/1428465642826192.jpg';
+                        break;
+                }
+                this.setState({imgUri: uri})
+            }
+        })))
+    }
+
+    render() {
+        return (
+            <View style={[ss.flex]}>
+                <ToolbarAndroid
+                />
+                <Text
+                    style={[ss.font, {backgroundColor: 'yellow', color: 'purple', height: 100}]}
+                    onPress={()=>{this.props.navigator.pop()}}>
+                    ok! back to X!!!!
+                </Text>
+
+                <TouchableOpacity style={[ss.flex]} onPress={this._onItemPress}>
                     <Image
                         style={[{margin: 10, resizeMode: Image.resizeMode.cover}, ss.flex]}
                         source={{uri: this.state.imgUri}}
@@ -120,7 +214,7 @@ class TestNew extends Component {
     constructor(props) {
         super(props);
         // 初始状态
-        this._renderNavigator= this._renderNavigator.bind(this);
+        this._renderNavigator = this._renderNavigator.bind(this);
         this.state = {
             imgUri: 'http://www.th7.cn/d/file/p/2015/11/22/400694df58d16f6e071ca1b936ff57d4.jpg',
         };
@@ -156,25 +250,25 @@ class TestNew extends Component {
                 initialRoute={{id: 'text'}}
                 renderScene={this._renderNavigator}
             />
-                //configureScene={(rount)=>{
-                //    return Navigator.SceneConfigs.VerticalUpSwipeJump;
-                //}}
-               /* renderScene={(route, navigator)=>{
-                    switch (route.id) {
-                      case 'text':
-                          return (
-                              <First navigator={navigator} />
-                          );
-                          break;
-                      case 'image':
-                          return (
-                              <Second navigator={navigator} uri={this.state.imgUri}/>
-                          );
-                          break;
-                      default:
-                          break;
-                      }
-                  }}*/
+            //configureScene={(rount)=>{
+            //    return Navigator.SceneConfigs.VerticalUpSwipeJump;
+            //}}
+            /* renderScene={(route, navigator)=>{
+             switch (route.id) {
+             case 'text':
+             return (
+             <First navigator={navigator} />
+             );
+             break;
+             case 'image':
+             return (
+             <Second navigator={navigator} uri={this.state.imgUri}/>
+             );
+             break;
+             default:
+             break;
+             }
+             }}*/
 
 
             /* <View style={[ss.flex]}>
