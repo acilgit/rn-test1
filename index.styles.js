@@ -14,8 +14,16 @@ exports.android = StyleSheet.create({
         height: 80,
         padding: 0,
     },
+    toolbar: {
+        height: 56,
+        backgroundColor: '#FF6600'
+    },
     itemHor: {
         flex: 1,
+        height: 80,
+    },
+    head: {
+        width: 120,
         height: 80,
     },
     center: {
@@ -35,7 +43,7 @@ exports.android = StyleSheet.create({
         borderRightWidth: 1 / PixelRatio.get(),
     },
     font: {
-        color: 'white',
+        color: 'black',
         fontSize: 16,
         fontWeight: 'bold',
     }

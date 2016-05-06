@@ -19,10 +19,6 @@ import React, {
         flex: 1,
         height: 80,
     },
-    head: {
-        width: 80,
-        height: 80,
-    },
     center: {
         justifyContent: 'center',
         alignItems: 'center',

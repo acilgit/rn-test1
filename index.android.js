@@ -3,16 +3,19 @@
  * https://github.com/facebook/react-native
  */
 
-import React, {
+import React, {Component} from 'react';
+
+import {
     Alert,
     AppRegistry,
-    Component,
+    BackAndroid,
     Image,
     ListView,
     Navigator,
+    Platform,
+    RefreshControl,
     Switch,
     Text,
-    RefreshControl,
     TouchableOpacity,
     ToolbarAndroid,
     ToastAndroid,
@@ -21,7 +24,8 @@ import React, {
 
 var thisNavigator;
 
-var ss = require('./index.styles').android;
+var styles = require('./index.styles');
+var ss = Platform.OS == 'android' ? styles.android : styles.ios;
 
 class First extends Component {
     // 构造
@@ -40,6 +44,11 @@ class First extends Component {
                     style={[{backgroundColor: '#ff6600', color: 'black', height: 300}, ss.font]}
                     onPress={()=>{this.props.navigator.push({id:'image'})}}>
                     ok! Welcome to X!!!!!!
+                </Text>
+                <Text
+                    style={[{backgroundColor: '#66ff66', color: 'black', flex: 1}, ss.center, ss.font]}
+                    onPress={()=>{this.props.navigator.push({id:'main'})}}>
+                    ok! Welcome to List!
                 </Text>
                 <Switch
                     onValueChange={(value)=>{
@@ -114,96 +123,183 @@ class Second extends Component {
     }
 }
 
-class RowItem extends Component {
-    // 构造
-      constructor(props) {
-        super(props);
-        // 初始状态
-        this.state = {
-            headUri: props.item.headUri;
-            text: props.item.headUri;
-        };
-      }
+/*class RowItem extends Component {
+ // 构造
+ constructor(props) {
+ super(props);
+ // 初始状态
+ this.state = {
+ headUri: props.item.headUri,
+ text: props.item.headUri,
+ };
+ }
 
-    _onItemPress
+ _onItemPress() {
 
-    render(){
-        return (
-            <View style={[ss.itemHor, {flexDirection: 'column'}]} >
-                <TouchableOpacity onPress={}
-                <Image style={[ss.head]} resizeMode="cover"/>
-                <Text style={ss.font}>{this.state.text}</Text>
-            </View>
-        )
-    }
-}
+ }
 
-class Third extends Component {
+ render() {
+ return (
+ <View style={[ss.itemHor, {flexDirection: 'column'}]}>
+ <TouchableOpacity onPress=this.props.onPress>
+ <Image style={[ss.head, {margin: 15}]} resizeMode="cover"/>
+ <Text style={ss.font}>{this.state.text}</Text>
+ </TouchableOpacity>
+ </View>
+ )
+ }
+ }*/
+var img1 = {uri: 'http://www.th7.cn/d/file/p/2015/11/22/400694df58d16f6e071ca1b936ff57d4.jpg', type: 1};
+var img2 = {uri: 'http://cc.cocimg.com/api/uploads/20150408/1428465581541704.jpg', type: 2};
+var LIST_IMG = [img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2,
+];
+
+class Main extends Component {
 
     // 构造
     constructor(props) {
         super(props);
         // 初始状态
-        //let list = {['ookcode-word', 'ookcode-word', 'ookcode-word', 'ookcode-word', 'ookcode-word', 'ookcode-word', 'ookcode-word',].map((item, index)}
-        let LIST_IMG = ['https://fbcdn-dragon-a.akamaihd.net/hphotos-ak-ash3/t39.1997/p128x128/851549_767334479959628_274486868_n.png', 'https://fbcdn-dragon-a.akamaihd.net/hphotos-ak-prn1/t39.1997/p128x128/851561_767334496626293_1958532586_n.png', 'https://fbcdn-dragon-a.akamaihd.net/hphotos-ak-ash3/t39.1997/p128x128/851579_767334503292959_179092627_n.png', 'https://fbcdn-dragon-a.akamaihd.net/hphotos-ak-prn1/t39.1997/p128x128/851589_767334513292958_1747022277_n.png', 'https://fbcdn-dragon-a.akamaihd.net/hphotos-ak-prn1/t39.1997/p128x128/851563_767334559959620_1193692107_n.png', 'https://fbcdn-dragon-a.akamaihd.net/hphotos-ak-prn1/t39.1997/p128x128/851593_767334566626286_1953955109_n.png', 'https://fbcdn-dragon-a.akamaihd.net/hphotos-ak-prn1/t39.1997/p128x128/851591_767334523292957_797560749_n.png', 'https://fbcdn-dragon-a.akamaihd.net/hphotos-ak-prn1/t39.1997/p128x128/851567_767334529959623_843148472_n.png', 'https://fbcdn-dragon-a.akamaihd.net/hphotos-ak-prn1/t39.1997/p128x128/851548_767334489959627_794462220_n.png', 'https://fbcdn-dragon-a.akamaihd.net/hphotos-ak-prn1/t39.1997/p128x128/851575_767334539959622_441598241_n.png', 'https://fbcdn-dragon-a.akamaihd.net/hphotos-ak-ash3/t39.1997/p128x128/851573_767334549959621_534583464_n.png', 'https://fbcdn-dragon-a.akamaihd.net/hphotos-ak-prn1/t39.1997/p128x128/851583_767334573292952_1519550680_n.png'];
-        this._onItemPress = this._onItemPress.bind(this);
+        this._onRefresh = this._onRefresh.bind(this);
+        this._getComments = this._getComments.bind(this);
+        this._onEndReached = this._onEndReached.bind(this);
+        this._actionSelected = this._actionSelected.bind(this);
+        var dataSource = new ListView.DataSource({rowHasChanged: (rv, rc) => rv !== rc});
         this.state = {
-            ds: null,
-            refreshing: false;
-    }}
-
-    _createRows(uri, i){
-        return
+            isLoading: false,
+            isRefreshing: false,
+            list: [],
+            ds: dataSource,
+        }
     }
 
-    componentDidMount() {
-
+    componentWillMount() {
+        let newState = {};
+        newState.list = this.state.list.concat(LIST_IMG.slice(0, 8));
+        newState.ds = this.state.ds.cloneWithRows(newState.list);
+        this.setState(newState);
     }
 
-    /**
-     * bind this
-     * @private
-     */
-    _onItemPress() {
-        ToastAndroid.show('Image pressed!', ToastAndroid.SHORT);
-        Alert.alert('标题', 'messages', '.......'.split('').map((dot, index)=>({
-            text: '按键' + index,
-            onPress: ()=> {
-                uri = null;
-                switch (index) {
-                    case 0:
-                        uri = 'http://lookcode-wordpress.stor.sinaapp.com/uploads/2016/02/one5.gif';
-                        break;
-                    case 1:
-                        uri = 'http://cc.cocimg.com/api/uploads/20150408/1428465581541704.jpg';
-                        break;
-                    case 2:
-                        uri = 'http://cc.cocimg.com/api/uploads/20150408/1428465642826192.jpg';
-                        break;
-                }
-                this.setState({imgUri: uri})
+    _actionSelected(index) {
+        switch (index) {
+            case 0:
+                ToastAndroid.show('action ' + index + 'pressed', ToastAndroid.SHORT);
+                this.props.navigator.pop();
+                break
+        }
+    };
+
+    _addNewRows(datas) {
+        this.state.list = this.state.list.concat(datas);
+        this.setState({isLoading: false, ds: this.state.ds.cloneWithRows(this.state.list)});
+    }
+
+    _onEndReached() {
+        if (!this.state.isLoading) {
+            this.setState({isLoading: true});
+            let count = this.state.ds.getRowCount();
+            if (count < LIST_IMG.length) {
+                this._addNewRows(LIST_IMG.slice(count, count + 30));
             }
-        })))
+        }
+    }
+
+    _onRefresh() {
+        this.setState({isRefreshing: true});
+        setTimeout(() => {
+            // prepend 10 items
+            const rowData = Array.from(new Array(4))
+                .map((val, i) => ({
+                    uri: 'http://cc.cocimg.com/api/uploads/20150408/1428465642826192.jpg',
+                    type: 3,
+                }))
+                .concat(this.state.list);
+            this.setState({
+                isRefreshing: false,
+                list: rowData,
+                ds: this.state.ds.cloneWithRows(rowData),
+            });
+        }, 2000);
     }
 
     render() {
         return (
-            <View style={[ss.flex]}>
-                <ToolbarAndroid
+            <View style={[ss.flex,{backgroundColor: '#fff'}]}>
+                <ToolbarAndroid style={[ss.toolbar]} title='超有营' actions={[{title:'资料', logo:img2, show: 'always'}]}
+                                onActionSelected={this._actionSelected}
+                                navigator={this.props.navigator}
                 />
-                <Text
-                    style={[ss.font, {backgroundColor: 'yellow', color: 'purple', height: 100}]}
-                    onPress={()=>{this.props.navigator.pop()}}>
-                    ok! back to X!!!!
-                </Text>
-
-                <TouchableOpacity style={[ss.flex]} onPress={this._onItemPress}>
-                    <Image
-                        style={[{margin: 10, resizeMode: Image.resizeMode.cover}, ss.flex]}
-                        source={{uri: this.state.imgUri}}
-                    />
-                </TouchableOpacity>
+                <ListView
+                    dataSource={this.state.ds}
+                    renderRow={this._renderRow}
+                    initialListSize={20}
+                    onEndReachedThreshold={60}
+                    onEndReached={this._onEndReached}
+                    refreshControl={<RefreshControl refreshing={this.state.isRefreshing}
+                          onRefresh={this._onRefresh}
+                          tintColor="#ccc"
+                          title="Loading..."
+                          colors={['#ff0000']}
+                          progressBackgroundColor="#fff" /> }
+                />
             </View>
+        )
+    }
+
+    _renderRow(rowData, sectionId, rowId) {
+        var uri = rowData.uri;
+        var text = rowId + '_' + rowData.type + ' ' + rowData.uri;
+        var _onItemPress = ()=> {
+            ToastAndroid.show(rowId + ' Item pressed!', ToastAndroid.SHORT);
+        }
+
+        switch (rowData.type) {
+            case 1:
+                return (
+                    <View style={[{padding: 5}]}>
+                        <TouchableOpacity onPress={_onItemPress}>
+                            <View style={[{flexDirection: 'row'}]}>
+                                <Image
+                                    style={[ss.head, {margin: 5, borderRadius: 10, borderWidth:1, borderColor:'#CCC'}]}
+                                    resizeMode="cover"
+                                    source={{uri:uri}}/>
+                                <Text style={[{marginRight:100}, ss.flex]}>{text}</Text>
+                            </View>
+                        </TouchableOpacity>
+                        {this._getComments};
+                    </View>
+                )
+                break;
+            default:
+                return (
+                    <View style={[{padding: 5}]}>
+                        <TouchableOpacity onPress={_onItemPress}>
+                            <View style={[{flexDirection: 'row'}]}>
+                                <Text style={[{marginLeft:100, justifyContent:'flex-end'}, ss.flex]}>{text}</Text>
+                                <Image style={[ss.head, {margin: 5, borderRadius: 10, borderWidth:1,
+                                    borderColor:'#CCC', justifyContent:'flex-end'}]}
+                                       resizeMode="cover"
+                                       source={{uri:uri}}/>
+                            </View>
+                        </TouchableOpacity>
+                        {this._getComments};
+                    </View>
+                )
+                break;
+        }
+    }
+
+    _getComments() {
+        var max = Math.floor(Math.random() * 10);
+        var textList = [];
+        for (var i = 0; i < max; i++) {
+            textList.push('这就是评论了这就是评论了这就是评论了!'+i);
+        }
+
+        return (
+            textList.map((text, index)=>{
+               return <Text style={[{backgroundColor: '#eee', marginLeft:100, padding:10}]}>{text}</Text>
+            })
         )
     }
 }
@@ -236,6 +332,11 @@ class TestNew extends Component {
             case 'image':
                 return (
                     <Second navigator={navigator} uri={this.state.imgUri}/>
+                );
+                break;
+            case 'main':
+                return (
+                    <Main navigator={navigator}/>
                 );
                 break;
             default:
