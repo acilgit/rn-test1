@@ -23,8 +23,8 @@ exports.android = StyleSheet.create({
         height: 80,
     },
     head: {
-        width: 120,
-        height: 80,
+        width: 60,
+        height: 40,
     },
     center: {
         justifyContent: 'center',

@@ -13,6 +13,7 @@ import {
     ListView,
     Navigator,
     Platform,
+    ProgressBarAndroid,
     RefreshControl,
     Switch,
     Text,
@@ -161,9 +162,9 @@ class Main extends Component {
         super(props);
         // 初始状态
         this._onRefresh = this._onRefresh.bind(this);
-        this._getComments = this._getComments.bind(this);
         this._onEndReached = this._onEndReached.bind(this);
         this._actionSelected = this._actionSelected.bind(this);
+        this._renderRow = this._renderRow.bind(this);
         var dataSource = new ListView.DataSource({rowHasChanged: (rv, rc) => rv !== rc});
         this.state = {
             isLoading: false,
@@ -175,7 +176,7 @@ class Main extends Component {
 
     componentWillMount() {
         let newState = {};
-        newState.list = this.state.list.concat(LIST_IMG.slice(0, 8));
+        newState.list = this.state.list.concat(LIST_IMG.slice(0, 20));
         newState.ds = this.state.ds.cloneWithRows(newState.list);
         this.setState(newState);
     }
@@ -196,11 +197,13 @@ class Main extends Component {
 
     _onEndReached() {
         if (!this.state.isLoading) {
-            this.setState({isLoading: true});
-            let count = this.state.ds.getRowCount();
-            if (count < LIST_IMG.length) {
-                this._addNewRows(LIST_IMG.slice(count, count + 30));
-            }
+            setTimeout(() => {
+                this.setState({isLoading: true});
+                let count = this.state.ds.getRowCount();
+                if (count < LIST_IMG.length) {
+                    this._addNewRows(LIST_IMG.slice(count, count + 20));
+                }
+            }, 2000);
         }
     }
 
@@ -208,7 +211,7 @@ class Main extends Component {
         this.setState({isRefreshing: true});
         setTimeout(() => {
             // prepend 10 items
-            const rowData = Array.from(new Array(4))
+            const rowData = Array.from(new Array(2))
                 .map((val, i) => ({
                     uri: 'http://cc.cocimg.com/api/uploads/20150408/1428465642826192.jpg',
                     type: 3,
@@ -230,6 +233,7 @@ class Main extends Component {
                                 navigator={this.props.navigator}
                 />
                 <ListView
+                    ref="lv"
                     dataSource={this.state.ds}
                     renderRow={this._renderRow}
                     initialListSize={20}
@@ -241,6 +245,7 @@ class Main extends Component {
                           title="Loading..."
                           colors={['#ff0000']}
                           progressBackgroundColor="#fff" /> }
+                    renderFooter={()=>this.state.isLoading?<ProgressBarAndroid style={{height: 32}} /> : null}
                 />
             </View>
         )
@@ -251,6 +256,7 @@ class Main extends Component {
         var text = rowId + '_' + rowData.type + ' ' + rowData.uri;
         var _onItemPress = ()=> {
             ToastAndroid.show(rowId + ' Item pressed!', ToastAndroid.SHORT);
+            //this.refs.lv.scrollTo(500);
         }
 
         switch (rowData.type) {
@@ -263,10 +269,10 @@ class Main extends Component {
                                     style={[ss.head, {margin: 5, borderRadius: 10, borderWidth:1, borderColor:'#CCC'}]}
                                     resizeMode="cover"
                                     source={{uri:uri}}/>
-                                <Text style={[{marginRight:100}, ss.flex]}>{text}</Text>
+                                <Text style={[{marginRight:10}, ss.flex]}>{text}</Text>
                             </View>
                         </TouchableOpacity>
-                        {this._getComments};
+                        {this._getComments(rowData.type)}
                     </View>
                 )
                 break;
@@ -275,32 +281,34 @@ class Main extends Component {
                     <View style={[{padding: 5}]}>
                         <TouchableOpacity onPress={_onItemPress}>
                             <View style={[{flexDirection: 'row'}]}>
-                                <Text style={[{marginLeft:100, justifyContent:'flex-end'}, ss.flex]}>{text}</Text>
+                                <Text style={[{marginLeft:10, justifyContent:'flex-end'}, ss.flex]}>{text}</Text>
                                 <Image style={[ss.head, {margin: 5, borderRadius: 10, borderWidth:1,
                                     borderColor:'#CCC', justifyContent:'flex-end'}]}
                                        resizeMode="cover"
                                        source={{uri:uri}}/>
                             </View>
                         </TouchableOpacity>
-                        {this._getComments};
+                         {this._getComments(rowData.type)}
                     </View>
                 )
                 break;
         }
     }
 
-    _getComments() {
-        var max = Math.floor(Math.random() * 10);
+    _getComments(type) {
+        var max = Math.floor(Math.random() * 8);
         var textList = [];
         for (var i = 0; i < max; i++) {
             textList.push('这就是评论了这就是评论了这就是评论了!'+i);
         }
 
-        return (
-            textList.map((text, index)=>{
-               return <Text style={[{backgroundColor: '#eee', marginLeft:100, padding:10}]}>{text}</Text>
-            })
-        )
+       return textList.map((text, index)=>{
+           return (
+               <View key={index} style={[ss.flex, {backgroundColor: '#eee', padding:10}, type==1?{marginRight:80}:{marginLeft:80}]}>
+                   <Text style={[{}]}>{text}</Text>
+               </View>
+           )
+        })
     }
 }
 
@@ -320,9 +328,8 @@ class TestNew extends Component {
     //    this.state.setState({});
     //}
 
-
     _renderNavigator(route, navigator) {
-        //thisNavigator = navigator;
+        thisNavigator = navigator;
         switch (route.id) {
             case 'text':
                 return (
@@ -346,10 +353,13 @@ class TestNew extends Component {
 
     render() {
 
+        var sceneConfig = Object.assign({}, Navigator.SceneConfigs.FloatFromRight, {gestures: {pop: null}});
+
         return (
             <Navigator
                 initialRoute={{id: 'text'}}
                 renderScene={this._renderNavigator}
+                configureScene = {(route)=>sceneConfig}
             />
             //configureScene={(rount)=>{
             //    return Navigator.SceneConfigs.VerticalUpSwipeJump;
@@ -404,5 +414,14 @@ class TestNew extends Component {
 
 
 }
+
+BackAndroid.addEventListener('hardwareBackPress', ()=>{
+    if (thisNavigator && thisNavigator.getCurrentRoutes().length > 1){
+        thisNavigator.pop();
+    }else {
+        return false;
+    }
+    return true;
+})
 
 AppRegistry.registerComponent('TestNew', () => TestNew);
