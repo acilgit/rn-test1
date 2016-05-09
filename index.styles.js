@@ -46,7 +46,13 @@ exports.android = StyleSheet.create({
         color: 'black',
         fontSize: 16,
         fontWeight: 'bold',
-    }
+    },
+    footer: {
+        flex:1,
+        margin: 8,
+        height: 28,
+        justifyContent: 'center',
+    },
 });
 
 exports.ios = StyleSheet.create({

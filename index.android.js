@@ -26,7 +26,7 @@ import {
 var thisNavigator;
 
 var styles = require('./index.styles');
-var ss = Platform.OS == 'android' ? styles.android : styles.ios;
+var ss = Platform.OS == 'ios' ? styles.ios : styles.android;
 
 class First extends Component {
     // 构造
@@ -152,7 +152,7 @@ class Second extends Component {
  }*/
 var img1 = {uri: 'http://www.th7.cn/d/file/p/2015/11/22/400694df58d16f6e071ca1b936ff57d4.jpg', type: 1};
 var img2 = {uri: 'http://cc.cocimg.com/api/uploads/20150408/1428465581541704.jpg', type: 2};
-var LIST_IMG = [img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2,
+var LIST_IMG = [img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2,
 ];
 
 class Main extends Component {
@@ -165,9 +165,13 @@ class Main extends Component {
         this._onEndReached = this._onEndReached.bind(this);
         this._actionSelected = this._actionSelected.bind(this);
         this._renderRow = this._renderRow.bind(this);
+        this._renderFooter = this._renderFooter.bind(this);
         var dataSource = new ListView.DataSource({rowHasChanged: (rv, rc) => rv !== rc});
+        this.save = {};
+        this.save.endList = false;
+        this.save.isLoading = false;
+        this.save.renderFooterTimes = 0;
         this.state = {
-            isLoading: false,
             isRefreshing: false,
             list: [],
             ds: dataSource,
@@ -176,7 +180,7 @@ class Main extends Component {
 
     componentWillMount() {
         let newState = {};
-        newState.list = this.state.list.concat(LIST_IMG.slice(0, 20));
+        newState.list = this.state.list.concat(LIST_IMG.slice(0, 10));
         newState.ds = this.state.ds.cloneWithRows(newState.list);
         this.setState(newState);
     }
@@ -196,14 +200,18 @@ class Main extends Component {
     }
 
     _onEndReached() {
-        if (!this.state.isLoading) {
+        if (!this.save.endList) {
+            this.save.isLoading = true;
             setTimeout(() => {
-                this.setState({isLoading: true});
+                //this.setState({isLoading: true});
                 let count = this.state.ds.getRowCount();
                 if (count < LIST_IMG.length) {
                     this._addNewRows(LIST_IMG.slice(count, count + 20));
+                    this.save.renderFooterTimes++;
                 }
-            }, 2000);
+                this.save.endList = LIST_IMG.length == this.state.list.length;
+                this.save.isLoading = false;
+            }, 1500);
         }
     }
 
@@ -222,7 +230,7 @@ class Main extends Component {
                 list: rowData,
                 ds: this.state.ds.cloneWithRows(rowData),
             });
-        }, 2000);
+        }, 1200);
     }
 
     render() {
@@ -237,7 +245,7 @@ class Main extends Component {
                     dataSource={this.state.ds}
                     renderRow={this._renderRow}
                     initialListSize={20}
-                    onEndReachedThreshold={60}
+                    onEndReachedThreshold={10}
                     onEndReached={this._onEndReached}
                     refreshControl={<RefreshControl refreshing={this.state.isRefreshing}
                           onRefresh={this._onRefresh}
@@ -245,7 +253,7 @@ class Main extends Component {
                           title="Loading..."
                           colors={['#ff0000']}
                           progressBackgroundColor="#fff" /> }
-                    renderFooter={()=>this.state.isLoading?<ProgressBarAndroid style={{height: 32}} /> : null}
+                    renderFooter={this._renderFooter}
                 />
             </View>
         )
@@ -288,26 +296,51 @@ class Main extends Component {
                                        source={{uri:uri}}/>
                             </View>
                         </TouchableOpacity>
-                         {this._getComments(rowData.type)}
+                        {this._getComments(rowData.type)}
                     </View>
                 )
                 break;
         }
     }
 
+    _renderFooter() {
+        let {isLoading, endList, renderFooterTimes } = this.save;
+
+        if (!endList) {
+            if (Platform.OS === 'ios') {
+                return (
+                    <View style={ss.footer}></View>
+                );
+            } else {
+                return (
+                    <View style={[]} >
+                        <ProgressBarAndroid style={[ss.footer]}/>
+                    </View>
+                );
+            }
+        } else {
+            return (
+                <View style={[ss.footer,{backgroundColor: '#eee'}]}>
+                    <Text style={[{color: 'rgba(0, 0, 0, 0.3)', fontSize:16, justifyContent: 'center'}]}>数据已结加载完了- -|||</Text>
+                </View>
+            );
+        }
+    }
+
     _getComments(type) {
-        var max = Math.floor(Math.random() * 8);
+        var max = Math.floor(Math.random() * 3);
         var textList = [];
         for (var i = 0; i < max; i++) {
-            textList.push('这就是评论了这就是评论了这就是评论了!'+i);
+            textList.push('这就是评论了这就是评论了这就是评论了!' + i);
         }
 
-       return textList.map((text, index)=>{
-           return (
-               <View key={index} style={[ss.flex, {backgroundColor: '#eee', padding:10}, type==1?{marginRight:80}:{marginLeft:80}]}>
-                   <Text style={[{}]}>{text}</Text>
-               </View>
-           )
+        return textList.map((text, index)=> {
+            return (
+                <View key={index}
+                      style={[ss.flex, {backgroundColor: '#eee', padding:10}, type==1?{marginRight:80}:{marginLeft:80}]}>
+                    <Text style={[{}]}>{text}</Text>
+                </View>
+            )
         })
     }
 }
@@ -359,7 +392,7 @@ class TestNew extends Component {
             <Navigator
                 initialRoute={{id: 'text'}}
                 renderScene={this._renderNavigator}
-                configureScene = {(route)=>sceneConfig}
+                configureScene={(route)=>sceneConfig}
             />
             //configureScene={(rount)=>{
             //    return Navigator.SceneConfigs.VerticalUpSwipeJump;
@@ -415,10 +448,10 @@ class TestNew extends Component {
 
 }
 
-BackAndroid.addEventListener('hardwareBackPress', ()=>{
-    if (thisNavigator && thisNavigator.getCurrentRoutes().length > 1){
+BackAndroid.addEventListener('hardwareBackPress', ()=> {
+    if (thisNavigator && thisNavigator.getCurrentRoutes().length > 1) {
         thisNavigator.pop();
-    }else {
+    } else {
         return false;
     }
     return true;
