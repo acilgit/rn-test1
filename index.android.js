@@ -2,6 +2,7 @@
  * Sample React Native App
  * https://github.com/facebook/react-native
  */
+"use strict";
 
 import React, {Component} from 'react';
 
@@ -21,7 +22,10 @@ import {
     ToolbarAndroid,
     ToastAndroid,
     View,
+    WebView,
 } from 'react-native';
+
+import WebViewBridge from 'react-native-webview-bridge';
 
 var thisNavigator;
 
@@ -42,13 +46,18 @@ class First extends Component {
         return (
             <View style={[ss.flex]}>
                 <Text
-                    style={[{backgroundColor: '#ff6600', color: 'black', height: 300}, ss.font]}
+                    style={[{backgroundColor: '#ff6600', color: 'black', height: 100}, ss.font]}
                     onPress={()=>{this.props.navigator.push({id:'image'})}}>
                     ok! Welcome to X!!!!!!
                 </Text>
                 <Text
-                    style={[{backgroundColor: '#66ff66', color: 'black', flex: 1}, ss.center, ss.font]}
+                    style={[{backgroundColor: '#66ff66', color: 'black', height: 100}, ss.center, ss.font]}
                     onPress={()=>{this.props.navigator.push({id:'main'})}}>
+                    ok! Welcome to List!
+                </Text>
+                <Text
+                    style={[{backgroundColor: '#669922', color: 'black', height: 100}, ss.center, ss.font]}
+                    onPress={()=>{this.props.navigator.push({id:'webview'})}}>
                     ok! Welcome to List!
                 </Text>
                 <Switch
@@ -87,7 +96,7 @@ class Second extends Component {
         Alert.alert('标题', 'messages', '.......'.split('').map((dot, index)=>({
             text: '按键' + index,
             onPress: ()=> {
-                uri = null;
+                let uri = null;
                 switch (index) {
                     case 0:
                         uri = 'http://lookcode-wordpress.stor.sinaapp.com/uploads/2016/02/one5.gif';
@@ -104,13 +113,55 @@ class Second extends Component {
         })))
     }
 
+    _makeAction(type, ...args) {
+        return (...argList) => {
+            let action = {type};
+            args.forEach((arg, index)=> {
+                action[arg] = argList[index]
+            });
+            return action;
+        }
+    }
+
     render() {
+
+        var arr = [];
+        let a = 'aaa'
+        let b = 'bbb'
+        let c = 'ccc';
+        arr[a] = 'abcdefg';
+        arr[b] = 'bbbbbbb';
+        arr[c] = 'ccccccc';
+
+        let bb = arr[1];
+        let cc = arr[c];
+
+        var ac = {};
+        const {
+            types,
+            callAPI,
+            shouldCallAPI = () => true,
+            payload = {}
+            } = ac;
+
+        let type1 = 'typeName1';
+
+        let aAction = this._makeAction(type1, 'id', 'name', 'age', 'pw');
+
+        let aa = aAction(1234, 'aName', 99, 'kwgkwg');
+        let ad = {
+            [a](b, aa){
+                let text = b;
+                return [...aa, text];
+            }
+        };
+
         return (
             <View style={[ss.flex]}>
                 <Text
                     style={[ss.font, {backgroundColor: 'yellow', color: 'purple', height: 100}]}
                     onPress={()=>{this.props.navigator.pop()}}>
-                    ok! back to X!!!!
+                    ok! back to X!!!!{arr[c]}
                 </Text>
 
                 <TouchableOpacity style={[ss.flex]} onPress={this._onItemPress}>
@@ -119,6 +170,56 @@ class Second extends Component {
                         source={{uri: this.state.imgUri}}
                     />
                 </TouchableOpacity>
+            </View>
+        )
+    }
+}
+
+class WB extends Component {
+    // 构造
+    constructor(props) {
+        super(props);
+        // 初始状态
+        this._onBridgeMessage = this._onBridgeMessage.bind(this);
+        this.state = {};
+    }
+
+    componentDidMount() {
+
+    }
+
+    /**
+     * bind this
+     * @private
+     */
+    _onBridgeMessage(message) {
+        const { webviewbridge } = this.refs;
+
+        switch (message) {
+            case "hello from webview":
+                webviewbridge.sendToBridge("hello from react-native");
+                break;
+            case "got the message inside webview":
+                console.log("we have got a message from webview! yeah");
+                break;
+            case "got the message inside webview":
+                console.log("we have got a message from webview! yeah");
+                break;
+            default:
+                ToastAndroid.show(message, ToastAndroid.SHORT);
+                break;
+        }
+    }
+
+    render() {
+
+        return (
+            <View style={[ss.flex]}>
+                <WebViewBridge
+                    ref="webviewbridge2"
+                    onBridgeMessage={this._onBridgeMessage}
+                    source={{uri:require('../main.html')}}
+                />
             </View>
         )
     }
@@ -313,7 +414,7 @@ class Main extends Component {
                 );
             } else {
                 return (
-                    <View style={[]} >
+                    <View style={[]}>
                         <ProgressBarAndroid style={[ss.footer]}/>
                     </View>
                 );
@@ -321,7 +422,8 @@ class Main extends Component {
         } else {
             return (
                 <View style={[ss.footer,{backgroundColor: '#eee'}]}>
-                    <Text style={[{color: 'rgba(0, 0, 0, 0.3)', fontSize:16, justifyContent: 'center'}]}>数据已结加载完了- -|||</Text>
+                    <Text style={[{color: 'rgba(0, 0, 0, 0.3)', fontSize:16, justifyContent: 'center'}]}>数据已结加载完了-
+                        -|||</Text>
                 </View>
             );
         }
@@ -342,6 +444,13 @@ class Main extends Component {
                 </View>
             )
         })
+    }
+
+    addSomething(text) {
+        return {
+            name: 'myName',
+            text
+        }
     }
 }
 
@@ -377,6 +486,11 @@ class TestNew extends Component {
             case 'main':
                 return (
                     <Main navigator={navigator}/>
+                );
+                break;
+            case 'webview':
+                return (
+                    <WB navigator={navigator}/>
                 );
                 break;
             default:
