@@ -1,0 +1,16 @@
+<html>
+<script>
+    var pinID = 0;
+    function ping() {
+        var message = 'hello ' + Date.now();
+        document.title = message;
+        window.location.hash = pinID++;
+        return false;
+    }
+</script>
+<body>
+This is a HTML Page inside WebView
+<hr />
+<button onClick="window.location.hash = ping()">ping</button>
+</body>
+</html>

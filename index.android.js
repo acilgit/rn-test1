@@ -25,7 +25,7 @@ import {
     WebView,
 } from 'react-native';
 
-import WebViewBridge from 'react-native-webview-bridge';
+//import WebViewBridge from 'react-native-webview-bridge';
 
 var thisNavigator;
 
@@ -181,7 +181,9 @@ class WB extends Component {
         super(props);
         // 初始状态
         this._onBridgeMessage = this._onBridgeMessage.bind(this);
-        this.state = {};
+        this.state = {
+            message: '......',
+        };
     }
 
     componentDidMount() {
@@ -211,14 +213,34 @@ class WB extends Component {
         }
     }
 
+    _onNavigationStateChange(navState) {
+        this.setState({
+            message: navState.title,
+        });
+        ToastAndroid.show(JSON.stringify(navState), ToastAndroid.SHORT);
+    }
+
+
     render() {
+
+        //<WebView
+        //    ref="webviewbridge2"
+        //    onBridgeMessage={this._onBridgeMessage}
+        //    source={{uri:require('../main.html')}}
+        ///>
+
 
         return (
             <View style={[ss.flex]}>
-                <WebViewBridge
-                    ref="webviewbridge2"
-                    onBridgeMessage={this._onBridgeMessage}
-                    source={{uri:require('../main.html')}}
+                <Text style={{}}>Native View</Text>
+                <Text style={{}}>{this.state.message}</Text>
+                <Text style={{}}>Web View</Text>
+                <WebView
+                    automaticallyAdjustContentInsets={false}
+                    style={{height: 400}}
+                    source={require('./main2.html')}
+                    onNavigationStateChange={this._onNavigationStateChange.bind(this)}
+                    startInLoadingState={false}
                 />
             </View>
         )
