@@ -2,7 +2,8 @@
 <script>
     var pinID = 0;
     function ping() {
-        var message = 'hello ' + Date.now();
+        var msg ={type:0,name: "myName", uri:"www.stack.com"};
+        var message = JSON.stringify(msg);
         document.title = message;
         window.location.hash = pinID++;
         return false;

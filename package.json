@@ -12,6 +12,6 @@
     "redux": "*",
     "redux-thunk": "*",
     "immutable": "*",
-    "react-native-webview-bridge": "*"
+    "react-native-webview-bridge": "^0.20.3"
   }
 }

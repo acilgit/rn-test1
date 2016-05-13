@@ -25,7 +25,7 @@ import {
     WebView,
 } from 'react-native';
 
-//import WebViewBridge from 'react-native-webview-bridge';
+import WebViewBridge from 'react-native-webview-bridge';
 
 var thisNavigator;
 
@@ -202,9 +202,7 @@ class WB extends Component {
                 webviewbridge.sendToBridge("hello from react-native");
                 break;
             case "got the message inside webview":
-                console.log("we have got a message from webview! yeah");
-                break;
-            case "got the message inside webview":
+                ToastAndroid.show(message, ToastAndroid.SHORT);
                 console.log("we have got a message from webview! yeah");
                 break;
             default:
@@ -214,34 +212,74 @@ class WB extends Component {
     }
 
     _onNavigationStateChange(navState) {
-        this.setState({
-            message: navState.title,
-        });
-        ToastAndroid.show(JSON.stringify(navState), ToastAndroid.SHORT);
+        //ToastAndroid.show(navState.title, ToastAndroid.SHORT);
+        try{
+            //ToastAndroid.show(JSON.parse(navState.title), ToastAndroid.SHORT);
+            let msg = JSON.parse(navState.title);
+            if (msg.type != undefined) {
+                this.setState({
+                    message: msg.name,
+                });
+                switch (msg.type) {
+                    case 0:
+                        ToastAndroid.show(msg.name + " 0: uri:"+msg.uri, ToastAndroid.SHORT);
+                        break;
+                    case 1:
+                        ToastAndroid.show(msg.name + " "+msg.uri, ToastAndroid.SHORT);
+                        break;
+                    //case "hello from webview":
+                    //    webviewbridge.sendToBridge("hello from react-native");
+                    //    break;
+                    //case "got the message inside webview":
+                    //    console.log("we have got a message from webview! yeah");
+                    //    break;
+                    default:
+                        //ToastAndroid.show(msg, ToastAndroid.SHORT);
+                        break;
+                }
+            }
+
+            //ToastAndroid.show(JSON.stringify(navState), ToastAndroid.SHORT);
+        }catch(e){
+
+        }
     }
 
 
     render() {
-
+        const injectScript = `
+  (function () {
+    if (WebViewBridge) {
+      WebViewBridge.onMessage = function (message) {
+        if (message === "hello from react-native") {
+          WebViewBridge.send("got the message inside webview");
+        }
+      };
+      WebViewBridge.send("hello from webview");
+    }
+  }());
+`;
         //<WebView
-        //    ref="webviewbridge2"
-        //    onBridgeMessage={this._onBridgeMessage}
-        //    source={{uri:require('../main.html')}}
-        ///>
-
+        //automaticallyAdjustContentInsets={false}
+        //style={{height: 400}}
+        //source={require('./main2.html')}
+        //onNavigationStateChange={this._onNavigationStateChange.bind(this)}
+        //startInLoadingState={false}
+        //    />
 
         return (
             <View style={[ss.flex]}>
                 <Text style={{}}>Native View</Text>
                 <Text style={{}}>{this.state.message}</Text>
                 <Text style={{}}>Web View</Text>
-                <WebView
-                    automaticallyAdjustContentInsets={false}
-                    style={{height: 400}}
-                    source={require('./main2.html')}
-                    onNavigationStateChange={this._onNavigationStateChange.bind(this)}
-                    startInLoadingState={false}
+                <WebViewBridge
+                    ref="webviewbridge"
+                    onBridgeMessage={this._onBridgeMessage}
+                    source={require('./main.html')}
+                    javaScriptEnabled={true}
+                    injectedJavaScript={injectScript}
                 />
+
             </View>
         )
     }
