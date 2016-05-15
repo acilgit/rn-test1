@@ -15,9 +15,8 @@
 
     <script type="text/javascript" language="javascript">
 
-        function showHtmlcallJava(){
-            var str = window.jsObj.HtmlcallJava();
-            alert(str);
+        function  getShareJson(){
+            return JSON.stringify({id:10, name:"getShareJson", date:Date.now()});
         }
 
         function showHtmlcallJava2(){
@@ -29,10 +28,26 @@
             document.getElementById("id_input").value = "Java call Html";
         }
 
-        function showFromHtml2( param ){
+        function showFromHtml2(param ){
             document.getElementById("id_input2").value = "Java call Html : " + param;
         }
 
+        function share2(){
+            if (WebViewBridge) {
+                WebViewBridge.send(JSON.stringify({id:1000, name:"getSelf", date:Date.now()}));
+            }
+        }
+
+//        (function () {
+//            if (WebViewBridge) {
+//                WebViewBridge.onMessage = function (message) {
+//                    if (message === "hello from react-native") {
+//                        WebViewBridge.send("got the message inside webview");
+//                    }
+//                };
+//                WebViewBridge.send("hello from webview");
+//            }
+//        }());
     </script>
 </head>
 
@@ -45,9 +60,9 @@ hello IT-homer
 <br>
 <br>
 
-<input type="button" value="HtmlcallJava" onclick="showHtmlcallJava()" />
+<input id="btn" type="button" value="Share" onclick="share2()" />
 <br>
-<input type="button" value="HtmlcallJava2" onclick="showHtmlcallJava2()" />
+<input type="button" value="HtmlcallJava2" onclick="share2()" />
 
 <br>
 <br>

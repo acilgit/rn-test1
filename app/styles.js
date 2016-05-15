@@ -1,5 +1,7 @@
-import React, {
-    PixelRatio,
+"use strict";
+
+import React from 'react';
+import {PixelRatio,
     StyleSheet,
 } from 'react-native';
 exports.android = StyleSheet.create({
