@@ -1,15 +1,15 @@
 import * as types from './ActionTypes';
 
-export function moreList(list) {
+export function moreList(rows,list) {
     return dispatch =>{
-        dispatch(fetchList(list))
+        dispatch(loadMoreList(rows, list))
     }
 }
 
 export function getList(list) {
     return dispatch =>{
         if (!list.isLoading) {
-
+            dispatch(fetchList())
         }
         setTimeout(() => {
             // prepend 10 items
@@ -19,13 +19,8 @@ export function getList(list) {
                     type: 3,
                 }))
                 .concat(list.rows);
-            dispatch(receiveList(rowData))
-            this.setState({
-                isRefreshing: false,
-                list: rowData,
-                ds: this.state.ds.cloneWithRows(rowData),
-            });
-        }, 1200);
+            dispatch(receiveList(rowData));
+        }, 2200);
     }
 
     //return dispatch => {
@@ -63,9 +58,10 @@ function receiveList(rows) {
     }
 }
 
-function loadMoreList(rows, nowRead) {
+function loadMoreList(rows, list) {
     return {
         type: types.MORE_LIST,
-        list: rows,
+        rows: rows,
+        list: list,
     }
 }

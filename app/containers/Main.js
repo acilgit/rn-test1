@@ -285,7 +285,8 @@ export class List extends Component {
     };
 
     _addNewRows(datas) {
-        dispatch()
+        const {dispatch, list}=this.props;
+        dispatch(listActions.moreList(list));
         this.state.list = this.state.list.concat(datas);
         this.setState({isLoading: false, ds: this.state.ds.cloneWithRows(this.state.list)});
     }
