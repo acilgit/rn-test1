@@ -1,15 +1,11 @@
 import * as types from '../actions/ActionTypes';
 
-const initialState = [{
+const initialState = {
 	isRefreshing: false,
-	isFirstLoaded: true,
-	isLoadMore: false,
-	noMore: false,
-	index: 1,
-	articleList: []
-}];
+	list: [],
+};
 
-export default function page(state = initialState, action) {
+export default function list(state = initialState, action) {
 	switch (action.type) {
 		case types.FETCH_ARTICLE_LIST:
 			switch (action.category) {

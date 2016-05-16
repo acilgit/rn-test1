@@ -1,2 +1,0 @@
-export const FETCH_ARTICLE_LIST = 'FETCH__LIST';
-export const RECEIVE_ARTICLE_LIST = 'RECEIVE__LIST';

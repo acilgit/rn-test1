@@ -1,12 +1,15 @@
 package com.testnew;
 
 import com.facebook.react.ReactActivity;
+import cn.reactnative.modules.update.UpdatePackage;
+import cn.reactnative.modules.update.UpdateContext;
+import com.github.alinz.reactnativewebviewbridge.WebViewBridgePackage;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 
+
 import java.util.Arrays;
 import java.util.List;
-import com.github.alinz.reactnativewebviewbridge.WebViewBridgePackage;
 
 public class MainActivity extends ReactActivity {
 
@@ -34,10 +37,16 @@ public class MainActivity extends ReactActivity {
      */
     @Override
     protected List<ReactPackage> getPackages() {
+       // int a = ABC.abc
         return Arrays.<ReactPackage>asList(
             new MainReactPackage(),
-                                                  new WebViewBridgePackage() //<- this
+            new WebViewBridgePackage(),
+            new UpdatePackage()
         );
     }
 
+   @Override
+   protected String getJSBundleFile() {
+       return UpdateContext.getBundleUrl(this);
+   }
 }

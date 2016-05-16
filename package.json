@@ -6,12 +6,13 @@
     "start": "node node_modules/react-native/local-cli/cli.js start"
   },
   "dependencies": {
+    "immutable": "*",
     "react": "^0.14.8",
     "react-native": "^0.25.1",
+    "react-native-update": "^1.0.5",
+    "react-native-webview-bridge": "*",
     "react-redux": "*",
     "redux": "*",
-    "redux-thunk": "*",
-    "immutable": "*",
-    "react-native-webview-bridge": "*"
+    "redux-thunk": "*"
   }
 }

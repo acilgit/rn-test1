@@ -20,52 +20,12 @@ import {
     View,
 } from 'react-native';
 
-var thisNavigator;
+import WebViewBridge from 'react-native-webview-bridge';
 
-var styles = require('../styles');
+import styles from '../styles';
 var ss = Platform.OS == 'ios' ? styles.ios : styles.android;
 
-class First extends Component {
-    // 构造
-    constructor(props) {
-        super(props);
-        // 初始状态
-        this.state = {
-            sw: false,
-        };
-    }
-
-    render() {
-        return (
-            <View style={[ss.flex]}>
-                <Text
-                    style={[{backgroundColor: '#ff6600', color: 'black', height: 100}, ss.font]}
-                    onPress={()=>{this.props.navigator.push({id:'image'})}}>
-                    ok! Welcome to X!!!!!!
-                </Text>
-                <Text
-                    style={[{backgroundColor: '#66ff66', color: 'black', height: 100}, ss.center, ss.font]}
-                    onPress={()=>{this.props.navigator.push({id:'main'})}}>
-                    ok! Welcome to List!
-                </Text>
-                <Text
-                    style={[{backgroundColor: '#669922', color: 'black', height: 100}, ss.center, ss.font]}
-                    onPress={()=>{this.props.navigator.push({id:'webview'})}}>
-                    ok! Welcome to List!
-                </Text>
-                <Switch
-                    onValueChange={(value)=>{
-                        ToastAndroid.show("value:"+ value, ToastAndroid.SHORT);
-                        this.setState({sw: value});
-                    }}
-                    value={this.state.sw}
-                />
-            </View>
-        )
-    }
-}
-
-class Second extends Component {
+export class Second extends Component {
     // 构造
     constructor(props) {
         super(props);
@@ -168,7 +128,7 @@ class Second extends Component {
     }
 }
 
-class WB extends Component {
+export class Web extends Component {
     // 构造
     constructor(props) {
         super(props);
@@ -181,40 +141,6 @@ class WB extends Component {
 
     componentDidMount() {
 
-    }
-
-    _onNavigationStateChange(navState) {
-        //ToastAndroid.show(navState.title, ToastAndroid.SHORT);
-        try {
-            //ToastAndroid.show(JSON.parse(navState.title), ToastAndroid.SHORT);
-            let msg = JSON.parse(navState.title);
-            if (msg.type != undefined) {
-                this.setState({
-                    message: msg.name,
-                });
-                switch (msg.type) {
-                    case 0:
-                        ToastAndroid.show(msg.name + " 0: uri:" + msg.uri, ToastAndroid.SHORT);
-                        break;
-                    case 1:
-                        ToastAndroid.show(msg.name + " " + msg.uri, ToastAndroid.SHORT);
-                        break;
-                    //case "hello from webview":
-                    //    webviewbridge.sendToBridge("hello from react-native");
-                    //    break;
-                    //case "got the message inside webview":
-                    //    console.log("we have got a message from webview! yeah");
-                    //    break;
-                    default:
-                        //ToastAndroid.show(msg, ToastAndroid.SHORT);
-                        break;
-                }
-            }
-
-            //ToastAndroid.show(JSON.stringify(navState), ToastAndroid.SHORT);
-        } catch (e) {
-
-        }
     }
 
     /**
@@ -240,7 +166,6 @@ class WB extends Component {
         }
     }
 
-
     //WebViewBridge.send(getShareJson());
     render() {
         const injectScript = `
@@ -253,18 +178,18 @@ class WB extends Component {
         btn.onclick=share;
         btn.value="sssssss";
         `;
-  //      const injectScript = `
-  //(function () {
-  //  if (WebViewBridge) {
-  //    WebViewBridge.onMessage = function (message) {
-  //      if (message === "hello from react-native") {
-  //        WebViewBridge.send("got the message inside webview");
-  //      }
-  //    };
-  //    WebViewBridge.send("hello from webview");
-  //  }
-  //}());
-  //      `;
+        //      const injectScript = `
+        //(function () {
+        //  if (WebViewBridge) {
+        //    WebViewBridge.onMessage = function (message) {
+        //      if (message === "hello from react-native") {
+        //        WebViewBridge.send("got the message inside webview");
+        //      }
+        //    };
+        //    WebViewBridge.send("hello from webview");
+        //  }
+        //}());
+        //      `;
         //<WebView
         //automaticallyAdjustContentInsets={false}
         //style={{height: 400}}
@@ -278,15 +203,14 @@ class WB extends Component {
             <View style={[ss.flex]}>
                 <Text style={{}}>Native View</Text>
                 <Text style={{}}>{this.state.message}</Text>
-                <Text style={{}}>Web View</Text>
+                <Text style={{}}>Webb View</Text>
                 <WebViewBridge
                     ref="webviewbridge"
                     onBridgeMessage={this._onBridgeMessage}
-                    source={require('./src/main.html')}
+                    source={require('../src/main.html')}
                     javaScriptEnabled={true}
                     injectedJavaScript={injectScript}
                 />
-
             </View>
         )
     }
@@ -322,8 +246,8 @@ var img1 = {uri: 'http://www.th7.cn/d/file/p/2015/11/22/400694df58d16f6e071ca1b9
 var img2 = {uri: 'http://cc.cocimg.com/api/uploads/20150408/1428465581541704.jpg', type: 2};
 var LIST_IMG = [img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2,
 ];
-
-class Main extends Component {
+var dispatch;
+export class List extends Component {
 
     // 构造
     constructor(props) {
@@ -334,23 +258,19 @@ class Main extends Component {
         this._actionSelected = this._actionSelected.bind(this);
         this._renderRow = this._renderRow.bind(this);
         this._renderFooter = this._renderFooter.bind(this);
-        var dataSource = new ListView.DataSource({rowHasChanged: (rv, rc) => rv !== rc});
-        this.save = {};
-        this.save.endList = false;
-        this.save.isLoading = false;
-        this.save.renderFooterTimes = 0;
-        this.state = {
-            isRefreshing: false,
-            list: [],
-            ds: dataSource,
-        }
+        this.dataSource = new ListView.DataSource({
+            rowHasChanged: (rv, rc) => rv !== rc
+        });
+        dispatch = this.props.dispatch;
+        this.save = {
+            endList: false,
+            isLoading: false,
+            renderFooterTimes: 0,
+        };
     }
 
     componentWillMount() {
-        let newState = {};
-        newState.list = this.state.list.concat(LIST_IMG.slice(0, 10));
-        newState.ds = this.state.ds.cloneWithRows(newState.list);
-        this.setState(newState);
+        this.props.dataSource.cloneWithRows(this.state.list.concat(LIST_IMG.slice(0, 10)));
     }
 
     _actionSelected(index) {
@@ -364,6 +284,7 @@ class Main extends Component {
 
     _addNewRows(datas) {
         this.state.list = this.state.list.concat(datas);
+
         this.setState({isLoading: false, ds: this.state.ds.cloneWithRows(this.state.list)});
     }
 
@@ -384,7 +305,6 @@ class Main extends Component {
     }
 
     _onRefresh() {
-        this.setState({isRefreshing: true});
         setTimeout(() => {
             // prepend 10 items
             const rowData = Array.from(new Array(2))
@@ -402,6 +322,7 @@ class Main extends Component {
     }
 
     render() {
+        let {list} = this.props;
         return (
             <View style={[ss.flex,{backgroundColor: '#fff'}]}>
                 <ToolbarAndroid style={[ss.toolbar]} title='超有营' actions={[{title:'资料', logo:img2, show: 'always'}]}
@@ -415,7 +336,7 @@ class Main extends Component {
                     initialListSize={20}
                     onEndReachedThreshold={10}
                     onEndReached={this._onEndReached}
-                    refreshControl={<RefreshControl refreshing={this.state.isRefreshing}
+                    refreshControl={<RefreshControl refreshing={list.isRefreshing}
                           onRefresh={this._onRefresh}
                           tintColor="#ccc"
                           title="Loading..."
@@ -521,119 +442,3 @@ class Main extends Component {
     }
 }
 
-export default class App extends Component {
-
-    // 构造
-    constructor(props) {
-        super(props);
-        // 初始状态
-        this._renderNavigator = this._renderNavigator.bind(this);
-        this.state = {
-            imgUri: 'http://www.th7.cn/d/file/p/2015/11/22/400694df58d16f6e071ca1b936ff57d4.jpg',
-        };
-    }
-
-    //componentDidMount() {
-    //    this.state.setState({});
-    //}
-
-    _renderNavigator(route, navigator) {
-        thisNavigator = navigator;
-        switch (route.id) {
-            case 'text':
-                return (
-                    <First navigator={navigator}/>
-                );
-                break;
-            case 'image':
-                return (
-                    <Second navigator={navigator} uri={this.state.imgUri}/>
-                );
-                break;
-            case 'main':
-                return (
-                    <Main navigator={navigator}/>
-                );
-                break;
-            case 'webview':
-                return (
-                    <WB navigator={navigator}/>
-                );
-                break;
-            default:
-                break;
-        }
-    }
-
-    render() {
-
-        var sceneConfig = Object.assign({}, Navigator.SceneConfigs.FloatFromRight, {gestures: {pop: null}});
-
-        return (
-            <Navigator
-                initialRoute={{id: 'text'}}
-                renderScene={this._renderNavigator}
-                configureScene={(route)=>sceneConfig}
-            />
-            //configureScene={(rount)=>{
-            //    return Navigator.SceneConfigs.VerticalUpSwipeJump;
-            //}}
-            /* renderScene={(route, navigator)=>{
-             switch (route.id) {
-             case 'text':
-             return (
-             <First navigator={navigator} />
-             );
-             break;
-             case 'image':
-             return (
-             <Second navigator={navigator} uri={this.state.imgUri}/>
-             );
-             break;
-             default:
-             break;
-             }
-             }}*/
-
-
-            /* <View style={[ss.flex]}>
-             <View style={ss.container}>
-             <View style={[ ss.itemHor, ss.center]}>
-             <Text style={[ss.font]}>酒店</Text>
-             </View>
-             <View style={[ss.itemHor,  ss.lineLeftRight]}>
-             <View style={[ss.flex,ss.lineBottom, ss.center]}>
-             <Text style={[ss.font]}>海外酒店</Text>
-             </View>
-             <View style={[ss.flex, ss.center]}>
-             <Text style={[ss.font]}>特惠酒店</Text>
-             </View>
-             </View>
-             <View style={[ss.itemHor]}>
-             <View style={[ss.flex, ss.lineBottom, ss.center]}>
-             <Text style={[ss.font]}>团购</Text>
-             </View>
-             <View style={[ss.flex, ss.center]}>
-             <Text style={[ss.font]}>客栈，公寓</Text>
-             </View>
-             </View>
-             </View>
-             <Image
-             style={[{height: 200, margin: 10, resizeMode: 'cover'}, ss.flex, ss.center]}
-             source={{uri: urlImage}} />
-             </View>*/
-
-        );
-    }
-
-
-}
-
-BackAndroid.addEventListener('hardwareBackPress', ()=> {
-    if (thisNavigator && thisNavigator.getCurrentRoutes().length > 1) {
-        thisNavigator.pop();
-    } else {
-        return false;
-    }
-    return true;
-})
