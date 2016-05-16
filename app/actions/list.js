@@ -1,8 +1,32 @@
 import * as types from './ActionTypes';
 
-export function getList() {
-    return dispatch(fetchList);
+export function moreList(list) {
+    return dispatch =>{
+        dispatch(fetchList(list))
+    }
+}
 
+export function getList(list) {
+    return dispatch =>{
+        if (!list.isLoading) {
+
+        }
+        setTimeout(() => {
+            // prepend 10 items
+            const rowData = Array.from(new Array(3))
+                .map((val, i) => ({
+                    uri: 'http://cc.cocimg.com/api/uploads/20150408/1428465642826192.jpg',
+                    type: 3,
+                }))
+                .concat(list.rows);
+            dispatch(receiveList(rowData))
+            this.setState({
+                isRefreshing: false,
+                list: rowData,
+                ds: this.state.ds.cloneWithRows(rowData),
+            });
+        }, 1200);
+    }
 
     //return dispatch => {
     //    if (!isLoadMore) {
@@ -31,19 +55,17 @@ function fetchList() {
     }
 }
 
-function receiveList(rankList, category) {
+function receiveList(rows) {
     return {
         type: types.RECEIVE_LIST,
-        isRefreshing: false
+        isRefreshing: false,
+        rows: rows,
     }
 }
 
-function receiveArticleListMore(rankList, category, nowRead) {
+function loadMoreList(rows, nowRead) {
     return {
-        type: types.RECEIVE_ARTICLE_LIST_MORE,
-        isRefreshing: false,
-        category: category,
-        nowRead: nowRead,
-        rankList: rankList
+        type: types.MORE_LIST,
+        list: rows,
     }
 }

@@ -22,6 +22,8 @@ import {
 
 import WebViewBridge from 'react-native-webview-bridge';
 
+import * as listActions from '../actions/list';
+
 import styles from '../styles';
 var ss = Platform.OS == 'ios' ? styles.ios : styles.android;
 
@@ -283,8 +285,8 @@ export class List extends Component {
     };
 
     _addNewRows(datas) {
+        dispatch()
         this.state.list = this.state.list.concat(datas);
-
         this.setState({isLoading: false, ds: this.state.ds.cloneWithRows(this.state.list)});
     }
 
@@ -322,26 +324,28 @@ export class List extends Component {
     }
 
     render() {
-        let {list} = this.props;
+        let {list, dataSource, navigator} = this.props;
         return (
             <View style={[ss.flex,{backgroundColor: '#fff'}]}>
                 <ToolbarAndroid style={[ss.toolbar]} title='超有营' actions={[{title:'资料', logo:img2, show: 'always'}]}
                                 onActionSelected={this._actionSelected}
-                                navigator={this.props.navigator}
+                                navigator={navigator}
                 />
                 <ListView
                     ref="lv"
-                    dataSource={this.state.ds}
                     renderRow={this._renderRow}
+                    dataSource={dataSource.cloneWithRows(list.rows)}
                     initialListSize={20}
                     onEndReachedThreshold={10}
                     onEndReached={this._onEndReached}
-                    refreshControl={<RefreshControl refreshing={list.isRefreshing}
-                          onRefresh={this._onRefresh}
-                          tintColor="#ccc"
-                          title="Loading..."
-                          colors={['#ff0000']}
-                          progressBackgroundColor="#fff" /> }
+                    refreshControl={
+                        <RefreshControl
+                           refreshing={list.isRefreshing}
+                           onRefresh={this._onRefresh}
+                           tintColor="#ccc"
+                           title="Loading..."
+                           colors={['#ff0000']}
+                           progressBackgroundColor="#fff" /> }
                     renderFooter={this._renderFooter}
                 />
             </View>

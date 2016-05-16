@@ -2,7 +2,7 @@ import * as types from '../actions/ActionTypes';
 
 const initialState = {
 	isRefreshing: false,
-	list: [],
+	rows: [],
 };
 
 export default function list(state = initialState, action) {
