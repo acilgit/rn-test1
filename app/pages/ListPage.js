@@ -7,6 +7,7 @@ import {
     AppRegistry,
     BackAndroid,
     Image,
+    InteractionManager,
     ListView,
     Navigator,
     Platform,
@@ -44,16 +45,10 @@ export default class ListPage extends Component {
         this.dataSource = new ListView.DataSource({
             rowHasChanged: (rv, rc) => rv !== rc
         });
-
-        this.save = {
-            endList: false,
-            isLoading: false,
-            renderFooterTimes: 0,
-        };
     }
 
     componentWillMount() {
-        //this.dataSource.cloneWithRows(LIST_IMG.slice(0, 10));
+        this.props.list.rows = LIST_IMG.slice(0, 10);
     }
 
     _actionSelected(index) {
@@ -65,44 +60,18 @@ export default class ListPage extends Component {
         }
     };
 
-    _addNewRows(datas) {
-        const {dispatch, list}=this.props;
-        dispatch(listActions.addRefreshList(list));
-        //list.rows.concat(datas);
-        //this.setState({isLoading: false, ds: this.state.ds.cloneWithRows(this.state.list)});
-    }
-
     _onEndReached() {
-        if (!this.save.endList) {
-            this.save.isLoading = true;
-            setTimeout(() => {
-                //this.setState({isLoading: true});
-                let count = this.dataSource.getRowCount();
-                if (count < LIST_IMG.length) {
-                    this._addNewRows(LIST_IMG.slice(count, count + 20));
-                    this.save.renderFooterTimes++;
-                }
-                this.save.endList = LIST_IMG.length == this.state.list.length;
-                this.save.isLoading = false;
-            }, 1500);
-        }
+        const {dispatch, list}=this.props;
+        InteractionManager.runAfterInteractions(() => {
+            dispatch(listActions.loadMoreList(list, LIST_IMG));
+        });
     }
 
     _onRefresh() {
-        setTimeout(() => {
-            // prepend 10 items
-            const rowData = Array.from(new Array(2))
-                .map((val, i) => ({
-                    uri: 'http://cc.cocimg.com/api/uploads/20150408/1428465642826192.jpg',
-                    type: 3,
-                }))
-                .concat(this.state.list);
-            this.setState({
-                isRefreshing: false,
-                list: rowData,
-                ds: this.state.ds.cloneWithRows(rowData),
-            });
-        }, 1200);
+        const {dispatch, list}=this.props;
+        InteractionManager.runAfterInteractions(() => {
+            dispatch(listActions.addRefreshList(list));
+        });
     }
 
     render() {
@@ -179,9 +148,9 @@ export default class ListPage extends Component {
     }
 
     _renderFooter() {
-        let {isLoading, endList, renderFooterTimes } = this.save;
+        const {list}=this.props;
 
-        if (!endList) {
+        if (!list.isEndList) {
             if (Platform.OS === 'ios') {
                 return (
                     <View style={ss.footer}></View>
@@ -196,8 +165,9 @@ export default class ListPage extends Component {
         } else {
             return (
                 <View style={[ss.footer,{backgroundColor: '#eee'}]}>
-                    <Text style={[{color: 'rgba(0, 0, 0, 0.3)', fontSize:16, justifyContent: 'center'}]}>数据已结加载完了-
-                        -|||</Text>
+                    <Text style={[{color: 'rgba(0, 0, 0, 0.3)', fontSize:16, justifyContent: 'center'}]}>
+                        数据已结加载完了- -|||
+                    </Text>
                 </View>
             );
         }
@@ -220,11 +190,5 @@ export default class ListPage extends Component {
         })
     }
 
-    addSomething(text) {
-        return {
-            name: 'myName',
-            text
-        }
-    }
 }
 

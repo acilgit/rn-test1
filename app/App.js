@@ -24,7 +24,7 @@ const {appKey} = updateConfig[Platform.OS];
 
 import Home from './containers/Home';
 
-var thisNavigator, isRemoved = false;
+var thisNavigator, isRemoved = true;
 
 export default class App extends Component {
 
@@ -129,4 +129,5 @@ export default class App extends Component {
                 renderScene={this._renderScene.bind(this)}/>
         );
     }
+
 }
