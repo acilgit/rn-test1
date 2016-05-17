@@ -1,44 +1,33 @@
 "use strict";
 
-import React, {Component} from 'react';
+import React from 'react';
 
 import {
     Alert,
-    AppRegistry,
-    BackAndroid,
     Image,
-    ListView,
-    Navigator,
     Platform,
     ProgressBarAndroid,
-    RefreshControl,
-    Switch,
     Text,
     TouchableOpacity,
-    ToolbarAndroid,
     ToastAndroid,
     View,
 } from 'react-native';
 
 import WebViewBridge from 'react-native-webview-bridge';
 
-import * as listActions from '../actions/list';
+import * as webActions from '../actions/web';
 
 import styles from '../styles';
 var ss = Platform.OS == 'ios' ? styles.ios : styles.android;
 
-export class WebCom extends Component {
+export default class WebPage extends React.Component {
     // 构造
     constructor(props) {
         super(props);
         // 初始状态
         this._onBridgeMessage = this._onBridgeMessage.bind(this);
-        this.state = {
-            message: '......',
-        };
-    }
-
-    componentDidMount() {
+        const {web}=this.props;
+        web.text = 'abcd---e';
 
     }
 
@@ -47,10 +36,10 @@ export class WebCom extends Component {
      * @private
      */
     _onBridgeMessage(message) {
-
+        const {dispatch} = this.props;
         ToastAndroid.show(message, ToastAndroid.SHORT);
         let msg = JSON.parse(message);
-        this.setState({message: msg.name});
+        dispatch(webActions.setText(msg.name));
         const { webviewbridge } = this.refs;
         switch (message) {
             case "hello from webview":
@@ -65,7 +54,6 @@ export class WebCom extends Component {
         }
     }
 
-    //WebViewBridge.send(getShareJson());
     render() {
         const injectScript = `
         function share(){
@@ -77,31 +65,13 @@ export class WebCom extends Component {
         btn.onclick=share;
         btn.value="sssssss";
         `;
-        //      const injectScript = `
-        //(function () {
-        //  if (WebViewBridge) {
-        //    WebViewBridge.onMessage = function (message) {
-        //      if (message === "hello from react-native") {
-        //        WebViewBridge.send("got the message inside webview");
-        //      }
-        //    };
-        //    WebViewBridge.send("hello from webview");
-        //  }
-        //}());
-        //      `;
-        //<WebView
-        //automaticallyAdjustContentInsets={false}
-        //style={{height: 400}}
-        //source={require('./main2.html')}
-        //onNavigationStateChange={this._onNavigationStateChange.bind(this)}
-        //startInLoadingState={false}
-        //    />
 
-        //injectedJavaScript={injectScript}
+        const {web}=this.props;
+
         return (
             <View style={[ss.flex]}>
                 <Text style={{}}>Native View</Text>
-                <Text style={{}}>{this.state.message}</Text>
+                <Text style={{}}>{web.text}</Text>
                 <Text style={{}}>Webb View</Text>
                 <WebViewBridge
                     ref="webviewbridge"

@@ -1,12 +1,11 @@
 import {combineReducers} from 'redux';
 // import reducers
-import {listReducer} from './list';
-import {imageReducer} from './image';
-import {webReducer} from './web';
+import list from './list';
+import image from './image';
+import web from './web';
 
 const rootReducer = combineReducers({
-    // reducer1, reducer2
-    listReducer, imageReducer, webReducer
+    list, image, web
 });
 
 export default rootReducer;

@@ -1,25 +1,13 @@
 import * as types from '../actions/ActionTypes';
 
 const initialState = {
-    isRefreshing: false,
-    rows: [],
+    uri: '',
 };
 
-export default function imageReducer(state = initialState, action) {
+export default function image(state = initialState, action) {
     switch (action.type) {
-        case types.FETCH_LIST:
-            state.isRefreshing = action.isRefreshing;
-            return Object.assign({}, state);
-            break;
-        case types.RECEIVE_LIST:
-            state.isRefreshing = action.isRefreshing;
-            state.rows = action.rows;
-            return Object.assign({}, state);
-            break;
-        case types.MORE_LIST:
-            state.isRefreshing = action.isRefreshing;
-            state.rows = state.rows.concat(action.rows);
-            state.index = state.index + 1;
+        case types.SET_IMAGE:
+            state.uri = action.uri;
             return Object.assign({}, state);
             break;
         default:
@@ -27,12 +15,3 @@ export default function imageReducer(state = initialState, action) {
     }
 }
 
-function combine(state, action) {
-    state.rows = action.rows
-    return state.articleList;
-}
-
-function loadMore(state, action) {
-    state.rows = state.rows.concat(action.rows);
-    return state.rows;
-}

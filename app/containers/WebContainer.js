@@ -3,11 +3,11 @@
 import React from 'react';
 import {connect} from 'react-redux';
 
-import WebCom from '../components/WebCom';
+import WebPage from '../pages/WebPage';
 
 class WebContainer extends React.Component {
     render() {
-        return <WebCom {...this.props} />
+        return <WebPage {...this.props} />
     }
 }
 

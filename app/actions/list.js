@@ -6,41 +6,22 @@ export function moreList(rows,list) {
     }
 }
 
-export function getList(list) {
+export function addRefreshList(list) {
     return dispatch =>{
         if (!list.isLoading) {
-            dispatch(fetchList())
+            dispatch(fetchList());
+            setTimeout(() => {
+                // prepend 10 items
+                const rowData = Array.from(new Array(3))
+                    .map((val, i) => ({
+                        uri: 'http://cc.cocimg.com/api/uploads/20150408/1428465642826192.jpg',
+                        type: 3,
+                    }))
+                    .concat(list.rows);
+                dispatch(receiveList(rowData));
+            }, 1500);
         }
-        setTimeout(() => {
-            // prepend 10 items
-            const rowData = Array.from(new Array(3))
-                .map((val, i) => ({
-                    uri: 'http://cc.cocimg.com/api/uploads/20150408/1428465642826192.jpg',
-                    type: 3,
-                }))
-                .concat(list.rows);
-            dispatch(receiveList(rowData));
-        }, 2200);
     }
-
-    //return dispatch => {
-    //    if (!isLoadMore) {
-    //        dispatch(fetchArticleList(category));
-    //    }
-    //    let URL = `http://gank.io/api/data/${category}/10/${index}`;
-    //    console.log(URL);
-    //    fetch(URL).then(response => response.json())
-    //        .then(responseData => {
-    //            console.log(responseData);
-    //            if (!isLoadMore) {
-    //                dispatch(receiveArticleList(responseData, category));
-    //            } else {
-    //                dispatch(receiveArticleListMore(responseData, category, nowRead));
-    //            }
-    //        }).catch((error) => {
-    //        console.log('error');
-    //    }).done();
-    //}
 }
 
 function fetchList() {

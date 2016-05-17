@@ -29,8 +29,8 @@ var img1 = {uri: 'http://www.th7.cn/d/file/p/2015/11/22/400694df58d16f6e071ca1b9
 var img2 = {uri: 'http://cc.cocimg.com/api/uploads/20150408/1428465581541704.jpg', type: 2};
 var LIST_IMG = [img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2,
 ];
-var dispatch;
-export class ListCom extends Component {
+
+export default class ListPage extends Component {
 
     // 构造
     constructor(props) {
@@ -44,7 +44,7 @@ export class ListCom extends Component {
         this.dataSource = new ListView.DataSource({
             rowHasChanged: (rv, rc) => rv !== rc
         });
-        dispatch = this.props.dispatch;
+
         this.save = {
             endList: false,
             isLoading: false,
@@ -67,8 +67,8 @@ export class ListCom extends Component {
 
     _addNewRows(datas) {
         const {dispatch, list}=this.props;
-        dispatch(listActions.moreList(list));
-        this.state.list = this.state.list.concat(datas);
+        dispatch(listActions.addRefreshList(list));
+        //list.rows.concat(datas);
         //this.setState({isLoading: false, ds: this.state.ds.cloneWithRows(this.state.list)});
     }
 

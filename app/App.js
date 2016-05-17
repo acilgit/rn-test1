@@ -7,8 +7,6 @@ import {
     Navigator,
     Platform,
 } from 'react-native';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
 
 import updateConfig  from '../update.json';
 import {
@@ -26,17 +24,13 @@ const {appKey} = updateConfig[Platform.OS];
 
 import Home from './containers/Home';
 
-var thisNavigator;
+var thisNavigator, isRemoved = false;
 
 export default class App extends Component {
 
     // 构造
     constructor(props) {
         super(props);
-        this.initialRoute = {
-            name: 'home',
-            container: Home
-        }
     }
 
     componentWillMount() {
@@ -99,15 +93,30 @@ export default class App extends Component {
         });
     };
 
+    _goBack() {
+        if (thisNavigator && thisNavigator.getCurrentRoutes().length > 1) {
+            thisNavigator.pop();
+        } else {
+            return false;
+        }
+        return true;
+    }
+
     _renderScene(route, navigator) {
         thisNavigator = navigator;
         let Container = route.container;
+        if (route.name === 'WebViewPage') {
+            BackAndroid.removeEventListener('hardwareBackPress', this._goBack);
+            isRemoved = true;
+        } else {
+            if (isRemoved) {
+                BackAndroid.addEventListener('hardwareBackPress', this._goBack);
+            }
+        }
         //const { dispatch } = this.props;
         //const action = bindActionCreators(actions, dispatch);
-        return <Container
-            {...route.params}
-            navigator={navigator}
-        />
+        //
+        return <Container navigator={navigator} {...route.params}/>
     };
 
     render() {
@@ -115,25 +124,9 @@ export default class App extends Component {
 
         return (
             <Navigator
-                initialRoute={this.initialRoute}
+                initialRoute={{name: 'home', container: Home}}
                 configureScene={(route)=>sceneConfig}
                 renderScene={this._renderScene.bind(this)}/>
         );
     }
 }
-
-BackAndroid.addEventListener('hardwareBackPress', ()=> {
-    if (thisNavigator && thisNavigator.getCurrentRoutes().length > 1) {
-        thisNavigator.pop();
-    } else {
-        return false;
-    }
-    return true;
-});
-
-function mapStateToProps(state) {
-    return {
-        state: state
-    }
-}
-export default connect(mapStateToProps)(App);

@@ -3,11 +3,11 @@
 import React from 'react';
 import {connect} from 'react-redux';
 
-import ListCom from '../components/ListCom';
+import ListPage from '../pages/ListPage';
 
 class ListContainer extends React.Component {
     render() {
-        return <ListCom {...this.props} />
+        return <ListPage {...this.props} />
     }
 }
 

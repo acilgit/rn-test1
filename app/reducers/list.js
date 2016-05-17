@@ -5,7 +5,7 @@ const initialState = {
     rows: [],
 };
 
-export default function listReducer(state = initialState, action) {
+export default function list(state = initialState, action) {
     switch (action.type) {
         case types.FETCH_LIST:
             state.isRefreshing = action.isRefreshing;
