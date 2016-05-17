@@ -20,236 +20,17 @@ import {
     View,
 } from 'react-native';
 
-import WebViewBridge from 'react-native-webview-bridge';
-
 import * as listActions from '../actions/list';
 
 import styles from '../styles';
 var ss = Platform.OS == 'ios' ? styles.ios : styles.android;
 
-export class Second extends Component {
-    // 构造
-    constructor(props) {
-        super(props);
-        // 初始状态
-        this._onItemPress = this._onItemPress.bind(this);
-        this.state = {
-            imgUri: this.props.uri,
-        };
-    }
-
-    componentDidMount() {
-
-    }
-
-    /**
-     * bind this
-     * @private
-     */
-    _onItemPress() {
-        ToastAndroid.show('Image pressed!', ToastAndroid.SHORT);
-        Alert.alert('标题', 'messages', '.......'.split('').map((dot, index)=>({
-            text: '按键' + index,
-            onPress: ()=> {
-                let uri = null;
-                switch (index) {
-                    case 0:
-                        uri = 'http://lookcode-wordpress.stor.sinaapp.com/uploads/2016/02/one5.gif';
-                        break;
-                    case 1:
-                        uri = 'http://cc.cocimg.com/api/uploads/20150408/1428465581541704.jpg';
-                        break;
-                    case 2:
-                        uri = 'http://cc.cocimg.com/api/uploads/20150408/1428465642826192.jpg';
-                        break;
-                }
-                this.setState({imgUri: uri})
-            }
-        })))
-    }
-
-    _makeAction(type, ...args) {
-        return (...argList) => {
-            let action = {type};
-            args.forEach((arg, index)=> {
-                action[arg] = argList[index]
-            });
-            return action;
-        }
-    }
-
-    render() {
-
-        var arr = [];
-        let a = 'aaa'
-        let b = 'bbb'
-        let c = 'ccc';
-        arr[a] = 'abcdefg';
-        arr[b] = 'bbbbbbb';
-        arr[c] = 'ccccccc';
-
-        let bb = arr[1];
-        let cc = arr[c];
-
-        var ac = {};
-        const {
-            types,
-            callAPI,
-            shouldCallAPI = () => true,
-            payload = {}
-            } = ac;
-
-        let type1 = 'typeName1';
-
-        let aAction = this._makeAction(type1, 'id', 'name', 'age', 'pw');
-
-        let aa = aAction(1234, 'aName', 99, 'kwgkwg');
-        let ad = {
-            [a](b, aa){
-                let text = b;
-                return [...aa, text];
-            }
-        };
-
-        return (
-            <View style={[ss.flex]}>
-                <Text
-                    style={[ss.font, {backgroundColor: 'yellow', color: 'purple', height: 100}]}
-                    onPress={()=>{this.props.navigator.pop()}}>
-                    ok! back to X!!!!{arr[c]}
-                </Text>
-
-                <TouchableOpacity style={[ss.flex]} onPress={this._onItemPress}>
-                    <Image
-                        style={[{margin: 10, resizeMode: Image.resizeMode.cover}, ss.flex]}
-                        source={{uri: this.state.imgUri}}
-                    />
-                </TouchableOpacity>
-            </View>
-        )
-    }
-}
-
-export class Web extends Component {
-    // 构造
-    constructor(props) {
-        super(props);
-        // 初始状态
-        this._onBridgeMessage = this._onBridgeMessage.bind(this);
-        this.state = {
-            message: '......',
-        };
-    }
-
-    componentDidMount() {
-
-    }
-
-    /**
-     * bind this
-     * @private
-     */
-    _onBridgeMessage(message) {
-
-        ToastAndroid.show(message, ToastAndroid.SHORT);
-        let msg = JSON.parse(message);
-        this.setState({message: msg.name});
-        const { webviewbridge } = this.refs;
-        switch (message) {
-            case "hello from webview":
-                webviewbridge.sendToBridge("hello from react-native");
-                break;
-            case "got the message inside webview":
-                ToastAndroid.show(message, ToastAndroid.SHORT);
-                console.log("we have got a message from webview! yeah");
-                break;
-            default:
-                break;
-        }
-    }
-
-    //WebViewBridge.send(getShareJson());
-    render() {
-        const injectScript = `
-        function share(){
-            if (WebViewBridge) {
-                WebViewBridge.send(getShareJson());
-            }
-        }
-        var btn = document.getElementById("btn");
-        btn.onclick=share;
-        btn.value="sssssss";
-        `;
-        //      const injectScript = `
-        //(function () {
-        //  if (WebViewBridge) {
-        //    WebViewBridge.onMessage = function (message) {
-        //      if (message === "hello from react-native") {
-        //        WebViewBridge.send("got the message inside webview");
-        //      }
-        //    };
-        //    WebViewBridge.send("hello from webview");
-        //  }
-        //}());
-        //      `;
-        //<WebView
-        //automaticallyAdjustContentInsets={false}
-        //style={{height: 400}}
-        //source={require('./main2.html')}
-        //onNavigationStateChange={this._onNavigationStateChange.bind(this)}
-        //startInLoadingState={false}
-        //    />
-
-        //injectedJavaScript={injectScript}
-        return (
-            <View style={[ss.flex]}>
-                <Text style={{}}>Native View</Text>
-                <Text style={{}}>{this.state.message}</Text>
-                <Text style={{}}>Webb View</Text>
-                <WebViewBridge
-                    ref="webviewbridge"
-                    onBridgeMessage={this._onBridgeMessage}
-                    source={require('../src/main.html')}
-                    javaScriptEnabled={true}
-                    injectedJavaScript={injectScript}
-                />
-            </View>
-        )
-    }
-}
-
-/*class RowItem extends Component {
- // 构造
- constructor(props) {
- super(props);
- // 初始状态
- this.state = {
- headUri: props.item.headUri,
- text: props.item.headUri,
- };
- }
-
- _onItemPress() {
-
- }
-
- render() {
- return (
- <View style={[ss.itemHor, {flexDirection: 'column'}]}>
- <TouchableOpacity onPress=this.props.onPress>
- <Image style={[ss.head, {margin: 15}]} resizeMode="cover"/>
- <Text style={ss.font}>{this.state.text}</Text>
- </TouchableOpacity>
- </View>
- )
- }
- }*/
 var img1 = {uri: 'http://www.th7.cn/d/file/p/2015/11/22/400694df58d16f6e071ca1b936ff57d4.jpg', type: 1};
 var img2 = {uri: 'http://cc.cocimg.com/api/uploads/20150408/1428465581541704.jpg', type: 2};
 var LIST_IMG = [img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2, img1, img2,
 ];
 var dispatch;
-export class List extends Component {
+export class ListCom extends Component {
 
     // 构造
     constructor(props) {
@@ -272,7 +53,7 @@ export class List extends Component {
     }
 
     componentWillMount() {
-        this.props.dataSource.cloneWithRows(this.state.list.concat(LIST_IMG.slice(0, 10)));
+        //this.dataSource.cloneWithRows(LIST_IMG.slice(0, 10));
     }
 
     _actionSelected(index) {
@@ -288,7 +69,7 @@ export class List extends Component {
         const {dispatch, list}=this.props;
         dispatch(listActions.moreList(list));
         this.state.list = this.state.list.concat(datas);
-        this.setState({isLoading: false, ds: this.state.ds.cloneWithRows(this.state.list)});
+        //this.setState({isLoading: false, ds: this.state.ds.cloneWithRows(this.state.list)});
     }
 
     _onEndReached() {
@@ -296,7 +77,7 @@ export class List extends Component {
             this.save.isLoading = true;
             setTimeout(() => {
                 //this.setState({isLoading: true});
-                let count = this.state.ds.getRowCount();
+                let count = this.dataSource.getRowCount();
                 if (count < LIST_IMG.length) {
                     this._addNewRows(LIST_IMG.slice(count, count + 20));
                     this.save.renderFooterTimes++;
@@ -325,7 +106,7 @@ export class List extends Component {
     }
 
     render() {
-        let {list, dataSource, navigator} = this.props;
+        let {list, navigator} = this.props;
         return (
             <View style={[ss.flex,{backgroundColor: '#fff'}]}>
                 <ToolbarAndroid style={[ss.toolbar]} title='超有营' actions={[{title:'资料', logo:img2, show: 'always'}]}
@@ -335,7 +116,7 @@ export class List extends Component {
                 <ListView
                     ref="lv"
                     renderRow={this._renderRow}
-                    dataSource={dataSource.cloneWithRows(list.rows)}
+                    dataSource={this.dataSource.cloneWithRows(list.rows)}
                     initialListSize={20}
                     onEndReachedThreshold={10}
                     onEndReached={this._onEndReached}

@@ -20,7 +20,9 @@ import {
 } from 'react-native';
 import {connect} from 'react-redux'
 
-import {Second, List, Web} from './Main';
+import ImageContainer from './ImageContainer';
+import ListContainer from './ListContainer';
+import WebContainer from './WebContainer'
 
 var styles = require('../styles');
 var ss = Platform.OS == 'ios' ? styles.ios : styles.android;
@@ -43,18 +45,18 @@ export default class Home extends Component {
             <View style={[ss.flex]}>
                 <Text
                     style={[{backgroundColor: '#ff6600', color: 'black', height: 100}, ss.font]}
-                    onPress={()=>{navigator.push({name:'image', container: Second, params:{uri:'http://i1.letvimg.com/lc05_iscms/201604/18/21/14/86c81daff3a040de8494a0d4dfcf2d9d.jpg'}})}}>
-                    ok! Welcome to X!!!!!!
+                    onPress={()=>{navigator.push({name:'image', container: ImageContainer, params:{uri:'http://i1.letvimg.com/lc05_iscms/201604/18/21/14/86c81daff3a040de8494a0d4dfcf2d9d.jpg'}})}}>
+                    ok! Welcome to Images!
                 </Text>
                 <Text
                     style={[{backgroundColor: '#66ff66', color: 'black', height: 100}, ss.center, ss.font]}
-                    onPress={()=>{navigator.push({name:'list', container:List})}}>
+                    onPress={()=>{navigator.push({name:'list', container:ListContainer})}}>
                     ok! Welcome to List!
                 </Text>
                 <Text
                     style={[{backgroundColor: '#669922', color: 'black', height: 100}, ss.center, ss.font]}
-                    onPress={()=>{navigator.push({name:'webview', container: Web})}}>
-                    ok! Welcome to List!
+                    onPress={()=>{navigator.push({name:'webview', container: WebContainer})}}>
+                    ok! Welcome to Web!
                 </Text>
                 <Switch
                     onValueChange={(value)=>{
@@ -93,10 +95,3 @@ export default class Home extends Component {
          </View>*/
 }
 
-function mapStateToProps(state) {
-    const {list} = state;
-    return {
-        list
-    }
-}
-export default connect(mapStateToProps)(Home);
