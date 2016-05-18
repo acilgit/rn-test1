@@ -50,6 +50,7 @@ export default class ListPage extends Component {
 
     componentWillMount() {
         this.props.list.rows = LIST_IMG.slice(0, 10);
+        this.props.list.isEndList = false;
     }
 
     _actionSelected(index) {
@@ -57,6 +58,7 @@ export default class ListPage extends Component {
             case 0:
                 ToastAndroid.show('count ' + index + ' of ' + renderCount, ToastAndroid.SHORT);
                 renderCount = 0;
+                this._onRefresh();
                 //this.props.navigator.pop();
                 break
         }
@@ -64,16 +66,12 @@ export default class ListPage extends Component {
 
     _onEndReached() {
         const {dispatch, list}=this.props;
-        InteractionManager.runAfterInteractions(() => {
             dispatch(listActions.loadMoreList(list, LIST_IMG));
-        });
     }
 
     _onRefresh() {
         const {dispatch, list}=this.props;
-        InteractionManager.runAfterInteractions(() => {
             dispatch(listActions.addRefreshList(list));
-        });
     }
 
     render() {

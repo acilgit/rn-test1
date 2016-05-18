@@ -11,8 +11,8 @@
     "react-native": "^0.25.1",
     "react-native-update": "^1.0.5",
     "react-native-webview-bridge": "*",
-    "redux-thunk": "*",
     "react-redux": "*",
-    "redux": "*"
+    "redux": "*",
+    "redux-thunk": "*"
   }
 }

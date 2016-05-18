@@ -16,7 +16,7 @@ export function addRefreshList(list) {
                     }));
                 //ToastAndroid.show('received List ', 500);
                 dispatch(receiveList(rowData));
-            }, 1500);
+            }, 800);
         }
     }
 }
@@ -32,10 +32,10 @@ export function loadMoreList(list, databaseList) {
                     if (count < databaseList.length) {
                         newRows = databaseList.slice(count, count + 20);
                     }
-                    let isEndList = databaseList.length === list.rows.length;
+                    let isEndList = databaseList.length <= list.rows.length;
                     let isFirstLoaded = list.rows.length > 0;
                     dispatch(getMoreList(newRows, isEndList, isFirstLoaded))
-                }, 1500);
+                }, 800);
             }
         }
     }
@@ -44,7 +44,7 @@ export function loadMoreList(list, databaseList) {
 function fetchList() {
     return {
         type: types.FETCH_REFRESH_LIST,
-        isRefreshing: true
+        isRefreshing: true,
     }
 }
 

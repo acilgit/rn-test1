@@ -28,7 +28,10 @@ export default class WebPage extends React.Component {
         this._onBridgeMessage = this._onBridgeMessage.bind(this);
         const {web}=this.props;
         web.text = 'abcd---e';
+    }
 
+    componentWillMount() {
+        WebViewBridge.getSettings()
     }
 
     /**
@@ -74,15 +77,19 @@ export default class WebPage extends React.Component {
                 <Text style={{}}>{web.text}</Text>
                 <Text style={{}}>Webb View</Text>
                 <WebViewBridge
-                    ref="webviewbridge"
-                    onBridgeMessage={this._onBridgeMessage}
-                    javaScriptEnabled={true}
-                    source={require('../src/main.html')}
-                    injectedJavaScript={injectScript}
-                />
+                ref="webviewbridge"
+                onBridgeMessage={this._onBridgeMessage}
+                javaScriptEnabled={true}
+                scalesPageToFit={true}
+                domStorageEnabled ={true}
+                automaticallyAdjustContentInsets  ={true}
+                source={{uri:'http://www.jcczgb.com/wap_new/tmpl/member/userinfo.html'}}
+                injectedJavaScript={injectScript}
+                    />
             </View>
         )
-        //source={{uri:'http://www.jcczgb.com/wap_new/shenghuobang_publish.html'}}
+                //source={require('../src/main.html')}
+        //source={{uri:'http://www.jcczgb.com/wap_new/tmpl/member/userinfo.html'}}
     }
 }
 

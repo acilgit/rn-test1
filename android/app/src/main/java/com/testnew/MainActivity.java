@@ -6,7 +6,7 @@ import cn.reactnative.modules.update.UpdateContext;
 import com.github.alinz.reactnativewebviewbridge.WebViewBridgePackage;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
-
+import com.burnweb.rnwebview.RNWebViewPackage;
 
 import java.util.Arrays;
 import java.util.List;
@@ -41,6 +41,7 @@ public class MainActivity extends ReactActivity {
         return Arrays.<ReactPackage>asList(
             new MainReactPackage(),
             new WebViewBridgePackage(),
+            new RNWebViewPackage(),
             new UpdatePackage()
         );
     }
