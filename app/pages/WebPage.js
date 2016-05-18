@@ -76,12 +76,13 @@ export default class WebPage extends React.Component {
                 <WebViewBridge
                     ref="webviewbridge"
                     onBridgeMessage={this._onBridgeMessage}
-                    source={require('../src/main.html')}
                     javaScriptEnabled={true}
+                    source={require('../src/main.html')}
                     injectedJavaScript={injectScript}
                 />
             </View>
         )
+        //source={{uri:'http://www.jcczgb.com/wap_new/shenghuobang_publish.html'}}
     }
 }
 
