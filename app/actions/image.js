@@ -6,9 +6,35 @@ export function setImage(uri) {
     }
 }
 
+export function setImageText( text) {
+    return (dispatch) =>{
+        dispatch(settingImageText( text))
+    }
+}
+
+export function setPassword( pwd) {
+    return (dispatch) =>{
+        dispatch(settingPassword( pwd))
+    }
+}
+
 function settingImage(uri) {
     return {
         type: types.SET_IMAGE,
-        uri
+        uri,
+    }
+}
+
+function settingImageText(text) {
+    return {
+        type: types.SET_IMAGE_TEXT,
+        text
+    }
+}
+
+function settingPassword(pwd) {
+    return {
+        type: types.SET_PASSWORD,
+        pwd
     }
 }

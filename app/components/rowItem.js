@@ -21,7 +21,7 @@ import {
     ToastAndroid,
     View,
 } from 'react-native';
-var shallowCompare = require('react-addons-shallow-compare');
+//var shallowCompare = require('react-addons-shallow-compare');
 import styles from '../styles';
 var ss = Platform.OS == 'ios' ? styles.ios : styles.android;
 
@@ -32,9 +32,9 @@ export default class RowItem extends React.Component {
         super(props);
     }
 
-    shouldComponentUpdate(nextProps, nextState) {
-        return shallowCompare(this, nextProps, nextState);
-    }
+    //shouldComponentUpdate(nextProps, nextState) {
+    //    return shallowCompare(this, nextProps, nextState);
+    //}
 
     render() {
         const {rowData, sectionId, rowId, _onItemPress} = this.props;

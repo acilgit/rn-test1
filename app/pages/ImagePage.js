@@ -9,6 +9,7 @@ import {
     Platform,
     ProgressBarAndroid,
     Text,
+    TextInput,
     TouchableOpacity,
     ToastAndroid,
     View,
@@ -24,9 +25,29 @@ export default class ImagePage extends React.Component {
     constructor(props) {
         super(props);
         this._onItemPress = this._onItemPress.bind(this);
+        this._onPress = this._onPress.bind(this);
+        this._onChangeText = this._onChangeText.bind(this);
         const {image, uri}=this.props;
         image.uri = uri;
+    }
 
+    componentDidMount() {
+        const {dispatch, image, navigator, uri}=this.props;
+        //setTimeout(() => {
+        //    var a = [];
+        //    for (var x = 1; x < 99999; x++) {
+        //        if (x % 2 == 1 && x % 3 == 0 && x % 4 == 1 && x % 5 == 1 && x % 6 == 3 && x % 7 == 0 && x % 8 == 1 && x % 9 == 0) {
+        //            a.push(x / 63);
+        //        }
+        //    }
+        //    ToastAndroid.show('x = ' + a, ToastAndroid.LONG);
+        //    dispatch(imageActions.setImageText('x='+a));
+        //}, 1000);
+    }
+
+    _onChangeText(text){
+        const {dispatch}=this.props;
+        dispatch(imageActions.setPassword(text));
     }
 
     _onItemPress() {
@@ -46,21 +67,40 @@ export default class ImagePage extends React.Component {
                         uri = 'http://cc.cocimg.com/api/uploads/20150408/1428465642826192.jpg';
                         break;
                 }
-                this.props.dispatch(imageActions.setImage(uri))
+                const {dispatch, image}=this.props;
+                dispatch(imageActions.setImage(uri));
             }
         })))
     }
-
+    _onPress() {
+        const {dispatch, image}=this.props;
+        ToastAndroid.show('Image pressed!', ToastAndroid.SHORT);
+        Alert.alert('标题', 'pw: '+ image.pwd , [{
+            text: '按键' ,
+            onPress: ()=> {
+                //let uri = null;
+                //const {dispatch, image}=this.props;
+                //dispatch(imageActions.setImage(uri));
+            }
+        }])
+    }
+s
     render() {
-        const {image, navigator, uri}=this.props;
+        const {dispatch, image, navigator, uri}=this.props;
+
         return (
             <View style={[ss.flex]}>
+                <TouchableOpacity style={[ss.flex]} onPress={this._onPress}>
                 <Text
-                    style={[ss.font, {backgroundColor: 'yellow', color: 'purple', height: 100}]}
-                    onPress={()=>{navigator.pop()}}>
-                    ok! back to X!!!!!
+                    style={[ss.font, {backgroundColor: 'yellow', color: 'purple', height: 30}]}>
+                    {image.text}
                 </Text>
-
+                </TouchableOpacity>
+                <TextInput
+                    ref='pw'
+                    onChangeText={this._onChangeText}
+                    value={image.pwd}
+                />
                 <TouchableOpacity style={[ss.flex]} onPress={this._onItemPress}>
                     <Image
                         style={[{margin: 10, resizeMode: Image.resizeMode.cover}, ss.flex]}
@@ -68,6 +108,6 @@ export default class ImagePage extends React.Component {
                     />
                 </TouchableOpacity>
             </View>
-        )
+        );
     }
 }

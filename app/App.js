@@ -8,7 +8,7 @@ import {
     Platform,
 } from 'react-native';
 
-import updateConfig  from '../update.json';
+/*import updateConfig  from '../update.json';
 import {
     isFirstTime,
     isRolledBack,
@@ -20,7 +20,7 @@ import {
     switchVersionLater,
     markSuccess,
 } from 'react-native-update';
-const {appKey} = updateConfig[Platform.OS];
+const {appKey} = updateConfig[Platform.OS];*/
 
 import Home from './containers/Home';
 
