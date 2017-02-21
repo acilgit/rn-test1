@@ -45,7 +45,7 @@ export default class ImagePage extends React.Component {
         //}, 1000);
     }
 
-    _onChangeText(text){
+    _onChangeText(text) {
         const {dispatch}=this.props;
         dispatch(imageActions.setPassword(text));
     }
@@ -72,11 +72,12 @@ export default class ImagePage extends React.Component {
             }
         })))
     }
+
     _onPress() {
         const {dispatch, image}=this.props;
         ToastAndroid.show('Image pressed!', ToastAndroid.SHORT);
-        Alert.alert('标题', 'pw: '+ image.pwd , [{
-            text: '按键' ,
+        Alert.alert('标题', 'pw: ' + image.pwd, [{
+            text: '按键',
             onPress: ()=> {
                 //let uri = null;
                 //const {dispatch, image}=this.props;
@@ -84,17 +85,18 @@ export default class ImagePage extends React.Component {
             }
         }])
     }
-s
+
+
     render() {
         const {dispatch, image, navigator, uri}=this.props;
 
         return (
             <View style={[ss.flex]}>
                 <TouchableOpacity style={[ss.flex]} onPress={this._onPress}>
-                <Text
-                    style={[ss.font, {backgroundColor: 'yellow', color: 'purple', height: 30}]}>
-                    {image.text}
-                </Text>
+                    <Text
+                        style={[ss.font, {backgroundColor: 'yellow', color: 'purple', height: 30}]}>
+                        {image.text}
+                    </Text>
                 </TouchableOpacity>
                 <TextInput
                     ref='pw'

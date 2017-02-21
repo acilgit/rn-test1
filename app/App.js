@@ -7,20 +7,7 @@ import {
     Navigator,
     Platform,
 } from 'react-native';
-
-/*import updateConfig  from '../update.json';
-import {
-    isFirstTime,
-    isRolledBack,
-    packageVersion,
-    currentVersion,
-    checkUpdate,
-    downloadUpdate,
-    switchVersion,
-    switchVersionLater,
-    markSuccess,
-} from 'react-native-update';
-const {appKey} = updateConfig[Platform.OS];*/
+import codePush from 'react-native-code-push';
 
 import Home from './containers/Home';
 
@@ -31,6 +18,18 @@ export default class App extends Component {
     // 构造
     constructor(props) {
         super(props);
+    }
+
+    componentDidMount() {
+        codePush.checkForUpdate()
+        .then(update -> {
+            if(!update){
+                ToastAndroid.show("app is up to date!");
+            }else {
+                ToastAndroid.show("update is available, download it?");
+                codePush.sync({updateDialog:true, installMode:codePush.installMode.IMMEDIATE})
+            }
+        })
     }
 
     componentWillMount() {
@@ -46,7 +45,7 @@ export default class App extends Component {
         //this._checkUpdate()
     }
 
-    _doUpdate(info) {
+   /* _doUpdate(info) {
         downloadUpdate(info).then(hash => {
             Alert.alert('提示', '下载完毕,是否重启应用?', [
                 {
@@ -64,15 +63,15 @@ export default class App extends Component {
         }).catch(err => {
             Alert.alert('提示', '更新失败.');
         });
-    };
+    };*/
 
-    _checkUpdate() {
+    /*_checkUpdate() {
         checkUpdate(appKey).then(info => {
             if (info.expired) {
                 Alert.alert('提示', '您的应用版本已更新,请前往应用商店下载新的版本', [
                     {
                         text: '确定', onPress: ()=> {
-                        info.downloadUrl && Linking.openURL(info.downloadUrl)
+                        info.downloadUrl && Linking.openURL(info.donloadUrl)
                     }
                     },
                 ]);
@@ -91,7 +90,7 @@ export default class App extends Component {
         }).catch(err => {
             Alert.alert('提示', '更新失败.');
         });
-    };
+    };*/
 
     _goBack() {
         if (thisNavigator && thisNavigator.getCurrentRoutes().length > 1) {
@@ -126,6 +125,7 @@ export default class App extends Component {
             <Navigator
                 initialRoute={{name: 'home', container: Home}}
                 configureScene={(route)=>sceneConfig}
+                //navigationBar={<Toolbar>}
                 renderScene={this._renderScene.bind(this)}/>
         );
     }

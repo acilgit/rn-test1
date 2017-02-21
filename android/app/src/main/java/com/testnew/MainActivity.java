@@ -1,6 +1,7 @@
 package com.testnew;
 
 import com.facebook.react.ReactActivity;
+import com.microsoft.codepush.react.CodePush;
 //import cn.reactnative.modules.update.UpdatePackage;
 //import cn.reactnative.modules.update.UpdateContext;
 import com.github.alinz.reactnativewebviewbridge.WebViewBridgePackage;
@@ -12,6 +13,12 @@ import java.util.Arrays;
 import java.util.List;
 
 public class MainActivity extends ReactActivity {
+
+    @Override
+    protected String getJSBundleFile() {
+      return CodePush.getJSBundleFile();
+    }
+
 
     /**
      * Returns the name of the main component registered from JavaScript.
@@ -42,7 +49,8 @@ public class MainActivity extends ReactActivity {
             new WebViewBridgePackage(),
          //   new UpdatePackage(),
          //   new RNWebViewPackage(),
-            new MainReactPackage()
+            new MainReactPackage(),
+            new CodePush("EFiNOgzjfPpgcPbZSlao905ar_U64JO1vrspW", getApplicationContext(), BuildConfig.DEBUG)
         );
     }
 }

@@ -68,6 +68,5 @@ exports.ios = StyleSheet.create({
         height: 80,
         padding: 0,
     },
-
 });
 

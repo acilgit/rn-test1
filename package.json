@@ -7,8 +7,10 @@
   },
   "dependencies": {
     "immutable": "*",
-    "react": "^0.14.8",
+    "react": "^0.15.3",
     "react-native": "^0.25.1",
+    "react-native-code-push": "^1.14.6-beta",
+    "react-native-material-design": "^0.3.6",
     "react-native-update": "^1.0.5",
     "react-native-webview-bridge": "*",
     "react-redux": "*",

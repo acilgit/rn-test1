@@ -14,4 +14,3 @@ export default function web(state = initialState, action) {
             return state;
     }
 }
-

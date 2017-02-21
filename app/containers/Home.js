@@ -23,6 +23,7 @@ import {connect} from 'react-redux'
 import ImageContainer from './ImageContainer';
 import ListContainer from './ListContainer';
 import WebContainer from './WebContainer'
+import ItemPage from '../pages/ItemPage'
 
 var styles = require('../styles');
 var ss = Platform.OS == 'ios' ? styles.ios : styles.android;
@@ -58,12 +59,18 @@ export default class Home extends Component {
                     onPress={()=>{navigator.push({name:'webview', container: WebContainer})}}>
                     ok! Welcome to Web!
                 </Text>
+                <Text
+                    style={[{backgroundColor: '#ff99ee', color: 'black', height: 100}, ss.center, ss.font]}
+                    onPress={()=>{navigator.push({name:'viewPager', container: ItemPage})}}>
+                    ok! to viewPager!
+                </Text>
                 <Switch
                     onValueChange={(value)=>{
                         ToastAndroid.show("value:"+ value, ToastAndroid.SHORT);
                     }}
                     value={false}
                 />
+                <Text>ver: 1.0.1</Text>
             </View>
         );
     }
