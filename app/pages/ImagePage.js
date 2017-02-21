@@ -26,7 +26,6 @@ export default class ImagePage extends React.Component {
         super(props);
         this._onItemPress = this._onItemPress.bind(this);
         this._onPress = this._onPress.bind(this);
-        this._onChangeText = this._onChangeText.bind(this);
         const {image, uri}=this.props;
         image.uri = uri;
     }
@@ -45,7 +44,7 @@ export default class ImagePage extends React.Component {
         //}, 1000);
     }
 
-    _onChangeText(text) {
+    _onChangeText = (text) => {
         const {dispatch}=this.props;
         dispatch(imageActions.setPassword(text));
     }
